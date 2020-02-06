@@ -29,7 +29,7 @@ ScopeId=0ne123123;DeviceId=myDevice;SharedAccessKey=s0f98as0d9f8as0d89fsa0d89f0a
 ```
 ScopeId=0ne12312;X509Thumbprint=1231231423459243859328
 ```
-The certificate must be avaiable, withing the private key, in the `CurrentUser\My` store.
+The certificate must be avaiable, within the private key, in the `CurrentUser\My` cert store.
 
 *ScopeId + DCM + Sas or X509* connect to Hub+DPS or Central using a DCM Id
 ```
