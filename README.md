@@ -20,16 +20,18 @@ var deviceClient = await deviceFactory.CreateDeviceClient().ConfigureAwait(false
 HostName=myhub.azure-devices.net;DeviceId=myDevice;SharedAccessKey=asd8f789fa9s8u9suf9s8udf9as8uf8d
 ```
 
-
-
-*Connection string with ScopeId + Sas Key* - connect to Hub+DPS or Central, Device Key must be generated with `dps-keygen` using the masterkey
+*ScopeId + Sas Key* - connect to Hub+DPS or Central, Device Key must be generated with `dps-keygen` using the masterkey
 ```
 ScopeId=0ne123123;DeviceId=myDevice;SharedAccessKey=s0f98as0d9f8as0d89fsa0d89f0asd89fsadf
 ```
 
-*Connection string with ScoprId + Certificate* - connect to Hub+DPS or Central. Root cert must be verified in Central or DPS
+*ScopeId + Certificate* - connect to Hub+DPS or Central. Root cert must be verified in Central or DPS
 ```
 ScopeId=0ne12312;X509Thumbprint=1231231423459243859328
 ```
 The certificate must be avaiable, withing the private key, in the `CurrentUser\My` store.
 
+*ScopeId + DCM + Sas or X509* connect to Hub+DPS or Central using a DCM Id
+```
+ScopeId=0ne12312;X509Thumbprint=1231231423459243859328;DcmId=urn:company:interface:1
+```
