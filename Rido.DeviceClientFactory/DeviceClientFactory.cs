@@ -4,33 +4,46 @@ using Microsoft.Azure.Devices.Provisioning.Client;
 using Microsoft.Azure.Devices.Provisioning.Client.Transport;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
-using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleToAttribute("RealTests")]
 
 namespace Rido
 {
+
+    enum ConnectionStringType
+    {
+        Invalid=0,
+        DirectSas,
+        DirectCert,
+        DPSSas,
+        DPSCert,
+    }
+
     public class DeviceClientFactory
     {
-        string HostName { get; set; }
-        string ScopeId { get; set; }
-        string DeviceId { get; set; }
-        string SharedAccessKey { get; set; }
-        string X509Thumbprint { get; set; }
-        string DcmId { get; set; }
-
-        internal bool parsedOk = false;
-
         readonly string _connectionString;
         readonly ILogger _logger;
+
+        internal ConnectionStringType connectionStringType = ConnectionStringType.Invalid;
+        bool usePnP = false;
+
+        internal string HostName { get; private set; }
+        internal string ScopeId { get; private set; }
+        internal string DeviceId { get; private set; }
+        internal string SharedAccessKey { get; private set; }
+        internal string X509Thumbprint { get; private set; }
+        internal string DcmId { get; private set; }
+
+        public DeviceClientFactory(string connectionString) : this(connectionString, new NullLogger<DeviceClientFactory>())
+        {
+        }
 
         public DeviceClientFactory(string connectionString, ILogger logger)
         {
@@ -41,40 +54,18 @@ namespace Rido
 
         public async Task<DeviceClient> CreateDeviceClient()
         {
-            if (!string.IsNullOrWhiteSpace(this.HostName)) //direct 
+            switch (connectionStringType)
             {
-                if (!string.IsNullOrWhiteSpace(this.DeviceId) && !string.IsNullOrWhiteSpace(this.SharedAccessKey)) // direct sas
-                {
-                    return await Task.FromResult(DeviceClient.CreateFromConnectionString(_connectionString)).ConfigureAwait(false);
-                }
-                if (!string.IsNullOrWhiteSpace(this.X509Thumbprint) && !string.IsNullOrWhiteSpace(this.DeviceId)) // direct with cert
-                {
-                    return await Task.FromResult(DeviceClient.Create(this.HostName, new DeviceAuthenticationWithX509Certificate(
-                        this.DeviceId, FindCertFromLocalStore(this.X509Thumbprint)))).ConfigureAwait(false);
-                }
-                else
-                {
-                    throw new ArgumentException("Hostname requires SasKey or Cert");
-                }
-            }
-            else if (!string.IsNullOrWhiteSpace(this.ScopeId)) // use DPS 
-            {
-                if (!string.IsNullOrWhiteSpace(this.SharedAccessKey)) // use group enrollment key
-                {
+                case ConnectionStringType.DirectSas:
+                    return await Task.FromResult<DeviceClient>(DeviceClient.CreateFromConnectionString(_connectionString)).ConfigureAwait(false);
+                case ConnectionStringType.DirectCert:
+                    return await Task.FromResult(DeviceClient.Create(this.HostName, new DeviceAuthenticationWithX509Certificate(this.DeviceId, FindCertFromLocalStore(this.X509Thumbprint)))).ConfigureAwait(false);
+                case ConnectionStringType.DPSSas:
                     return await ProvisionDeviceWithSasKey(this.ScopeId, this.DeviceId, this.SharedAccessKey).ConfigureAwait(false);
-                }
-                else if (!string.IsNullOrWhiteSpace(this.X509Thumbprint))
-                {
+                case ConnectionStringType.DPSCert:
                     return await ProvisionDeviceWithCert(this.ScopeId, this.X509Thumbprint).ConfigureAwait(false);
-                }
-                else
-                {
-                    throw new ArgumentException("Scope ID requires sasKey or Cert");
-                }
-            }
-            else
-            {
-                throw new ArgumentException("Connection string must include HostName or ScopeId");
+                default:
+                    return null;
             }
         }
 
@@ -87,13 +78,13 @@ namespace Rido
                     DeviceRegistrationResult provResult;
                     var provClient = ProvisioningDeviceClient.Create("global.azure-devices-provisioning.net", scopeId, security, transport);
 
-                    if (string.IsNullOrEmpty(DcmId))
+                    if (this.usePnP)
                     {
-                        provResult = await provClient.RegisterAsync().ConfigureAwait(false);
+                        provResult = await provClient.RegisterAsync(GetProvisionPayload(DcmId)).ConfigureAwait(false);
                     }
                     else
                     {
-                        provResult = await provClient.RegisterAsync(GetProvisionPayload(DcmId)).ConfigureAwait(false);
+                        provResult = await provClient.RegisterAsync().ConfigureAwait(false);
                     }
 
                     _logger.LogWarning($"Device Provisoning with SAS result: {provResult.Status} {provResult.DeviceId} {provResult.AssignedHub} with DCM {DcmId}");
@@ -124,13 +115,13 @@ namespace Rido
                     DeviceRegistrationResult provResult;
                     var provClient = ProvisioningDeviceClient.Create("global.azure-devices-provisioning.net", scopeId, security, transport);
 
-                    if (string.IsNullOrEmpty(DcmId))
+                    if (this.usePnP)
                     {
-                        provResult = await provClient.RegisterAsync().ConfigureAwait(false);
+                        provResult = await provClient.RegisterAsync(GetProvisionPayload(DcmId)).ConfigureAwait(false);
                     }
                     else
                     {
-                        provResult = await provClient.RegisterAsync(GetProvisionPayload(DcmId)).ConfigureAwait(false);
+                        provResult = await provClient.RegisterAsync().ConfigureAwait(false);
                     }
 
                     _logger.LogWarning($"Device Provisoning with X509 result: {provResult.Status} {provResult.DeviceId} {provResult.AssignedHub} with DCM {DcmId}");
@@ -153,18 +144,51 @@ namespace Rido
             }
         }
 
+        void ValidateParams()
+        {
+            if (!string.IsNullOrWhiteSpace(this.HostName)) //direct 
+            {
+                if (!string.IsNullOrWhiteSpace(this.DeviceId) && !string.IsNullOrWhiteSpace(this.SharedAccessKey)) // direct sas
+                {
+                    connectionStringType = ConnectionStringType.DirectSas;
+                }
+                if (!string.IsNullOrWhiteSpace(this.X509Thumbprint) && !string.IsNullOrWhiteSpace(this.DeviceId)) // direct with cert
+                {
+                    connectionStringType = ConnectionStringType.DirectCert;
+                }
+            }
+            else if (!string.IsNullOrWhiteSpace(this.ScopeId)) // use DPS 
+            {
+                if (!string.IsNullOrWhiteSpace(this.SharedAccessKey)) // use group enrollment key
+                {
+                    connectionStringType = ConnectionStringType.DPSSas;
+                }
+                else if (!string.IsNullOrWhiteSpace(this.X509Thumbprint))
+                {
+                    connectionStringType = ConnectionStringType.DPSCert;
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(this.DcmId))
+            {
+                usePnP = true;
+            }
+        }
 
         void ParseConnectionString(string connectionString)
         {
             _logger.LogInformation("Parsing: " + connectionString);
             IDictionary<string, string> map = connectionString.ToDictionary(';', '=');
+            if (map==null)
+            {
+                return;
+            }    
             this.HostName = GetConnectionStringValue(map, nameof(this.HostName));
             this.ScopeId = GetConnectionStringValue(map, nameof(this.ScopeId));
             this.DeviceId = GetConnectionStringValue(map, nameof(this.DeviceId));
             this.SharedAccessKey = GetConnectionStringValue(map, nameof(this.SharedAccessKey));
             this.X509Thumbprint = GetConnectionStringValue(map, nameof(this.X509Thumbprint));
             this.DcmId = GetConnectionStringValue(map, nameof(DcmId));
-            this.parsedOk = true;
+            this.ValidateParams();
         }
 
         X509Certificate2 FindCertFromLocalStore(object findValue, X509FindType findType = X509FindType.FindByThumbprint)
@@ -221,7 +245,7 @@ namespace Rido
         {
             if (string.IsNullOrWhiteSpace(valuePairString))
             {
-                throw new ArgumentException("Malformed Token");
+                return null;
             }
 
             IEnumerable<string[]> parts = new Regex($"(?:^|{kvpDelimiter})([^{kvpDelimiter}{kvpSeparator}]*){kvpSeparator}")
@@ -236,7 +260,7 @@ namespace Rido
 
             if (!parts.Any() || parts.Any(p => p.Length != 2))
             {
-                throw new FormatException("Malformed Token");
+                return null;
             }
 
             IDictionary<string, string> map = parts.ToDictionary(kvp => kvp[0], (kvp) => kvp[1], StringComparer.OrdinalIgnoreCase);
