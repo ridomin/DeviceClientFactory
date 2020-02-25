@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.Devices.Client;
+using Microsoft.Azure.Devices.Client;
 using Microsoft.Azure.Devices.Client.Exceptions;
 using Microsoft.Azure.Devices.Provisioning.Client;
 using Microsoft.Azure.Devices.Provisioning.Client.Transport;
@@ -13,17 +13,21 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleToAttribute("RealTests")]
+
 namespace Rido
 {
     public class DeviceClientFactory
     {
-
         string HostName { get; set; }
         string ScopeId { get; set; }
         string DeviceId { get; set; }
         string SharedAccessKey { get; set; }
         string X509Thumbprint { get; set; }
         string DcmId { get; set; }
+
+        internal bool parsedOk = false;
 
         readonly string _connectionString;
         readonly ILogger _logger;
@@ -160,6 +164,7 @@ namespace Rido
             this.SharedAccessKey = GetConnectionStringValue(map, nameof(this.SharedAccessKey));
             this.X509Thumbprint = GetConnectionStringValue(map, nameof(this.X509Thumbprint));
             this.DcmId = GetConnectionStringValue(map, nameof(DcmId));
+            this.parsedOk = true;
         }
 
         X509Certificate2 FindCertFromLocalStore(object findValue, X509FindType findType = X509FindType.FindByThumbprint)
