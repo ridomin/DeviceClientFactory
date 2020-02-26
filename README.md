@@ -10,7 +10,7 @@ This library is available as a NuGet package.
 
 ```cs
 var deviceFactory = new DeviceClientFactory(_connectionString, _logger);
-var deviceClient = await deviceFactory.CreateDeviceClient().ConfigureAwait(false);
+var deviceClient = await deviceFactory.CreateDeviceClientAsync().ConfigureAwait(false);
 ```
 
 ## Sample connection strings
