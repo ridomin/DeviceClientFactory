@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29721.120
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rido.DeviceClientFactory", "Rido.DeviceClientFactory\Rido.DeviceClientFactory.csproj", "{4F0DB4E6-84BA-49C4-851B-559687CE81ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealTests", "RealTests\RealTests.csproj", "{C594B239-CE63-4360-B87F-B1A2089C1847}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{C594B239-CE63-4360-B87F-B1A2089C1847}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDevice", "TestDevice\TestDevice.csproj", "{C7FD1E5B-A23B-4A4E-9EE9-FBCF4CB5033E}"
 EndProject

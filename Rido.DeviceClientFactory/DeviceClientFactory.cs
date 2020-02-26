@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-[assembly: InternalsVisibleToAttribute("RealTests")]
+[assembly: InternalsVisibleToAttribute("Tests")]
 
 namespace Rido
 {
