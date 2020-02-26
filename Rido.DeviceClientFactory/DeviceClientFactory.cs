@@ -44,7 +44,7 @@ namespace Rido
             this.ParseConnectionString(connectionString);
         }
 
-        public async Task<DeviceClient> CreateDeviceClient()
+        public async Task<DeviceClient> CreateDeviceClientAsync()
         {
             if (connectionStringType.Equals(ConnectionStringType.Invalid))
             {
@@ -54,13 +54,13 @@ namespace Rido
             switch (connectionStringType)
             {
                 case ConnectionStringType.DirectSas:
-                    return await Task.FromResult<DeviceClient>(DeviceClient.CreateFromConnectionString(_connectionString, TransportType.Mqtt)).ConfigureAwait(false);
+                    return await Task.FromResult(DeviceClient.CreateFromConnectionString(_connectionString, TransportType.Mqtt)).ConfigureAwait(false);
                 case ConnectionStringType.DirectCert:
-                    return await Task.FromResult(DeviceClient.Create(this.HostName, new DeviceAuthenticationWithX509Certificate(this.DeviceId, X509.FindCertFromLocalStore(this.X509Thumbprint)))).ConfigureAwait(false);
+                    return await Task.FromResult(DeviceClient.Create(this.HostName, new DeviceAuthenticationWithX509Certificate(this.DeviceId, X509.FindCertFromLocalStore(this.X509Thumbprint)), TransportType.Mqtt)).ConfigureAwait(false);
                 case ConnectionStringType.DPSSas:
-                    return await DPS.ProvisionDeviceWithSasKey(this.ScopeId, this.DeviceId, this.SharedAccessKey, this.DcmId).ConfigureAwait(false);
+                    return await DPS.ProvisionDeviceWithSasKeyAsync(this.ScopeId, this.DeviceId, this.SharedAccessKey, this.DcmId).ConfigureAwait(false);
                 case ConnectionStringType.DPSCert:
-                    return await DPS.ProvisionDeviceWithCert(this.ScopeId, this.X509Thumbprint, this.DcmId).ConfigureAwait(false);
+                    return await DPS.ProvisionDeviceWithCertAsync(this.ScopeId, this.X509Thumbprint, this.DcmId).ConfigureAwait(false);
                 default:
                     return null;
             }
@@ -68,17 +68,30 @@ namespace Rido
 
         void ParseConnectionString(string connectionString)
         {
+            string GetConnectionStringValue(IDictionary<string, string> dict, string propertyName)
+            {
+                if (!dict.TryGetValue(propertyName, out string value))
+                {
+                    _logger.LogInformation($"The connection string is missing the property: {propertyName}");
+                }
+                else
+                {
+                    _logger.LogInformation($"Connection Property Found: {propertyName}={value}");
+                }
+                return value;
+            }
+
             void ValidateParams()
             {
                 if (!string.IsNullOrWhiteSpace(this.HostName)) //direct 
                 {
                     if (!string.IsNullOrWhiteSpace(this.DeviceId) && !string.IsNullOrWhiteSpace(this.SharedAccessKey)) // direct sas
                     {
-                        connectionStringType = ConnectionStringType.DirectSas;
+                        this.connectionStringType = ConnectionStringType.DirectSas;
                     }
                     else if (!string.IsNullOrWhiteSpace(this.X509Thumbprint) && !string.IsNullOrWhiteSpace(this.DeviceId)) // direct with cert
                     {
-                        connectionStringType = ConnectionStringType.DirectCert;
+                        this.connectionStringType = ConnectionStringType.DirectCert;
                     }
                     else
                     {
@@ -89,15 +102,15 @@ namespace Rido
                 {
                     if (!string.IsNullOrWhiteSpace(this.SharedAccessKey)) // use group enrollment key
                     {
-                        connectionStringType = ConnectionStringType.DPSSas;
+                        this.connectionStringType = ConnectionStringType.DPSSas;
                     }
                     else if (!string.IsNullOrWhiteSpace(this.X509Thumbprint))
                     {
-                        connectionStringType = ConnectionStringType.DPSCert;
+                        this.connectionStringType = ConnectionStringType.DPSCert;
                     }
                     else
                     {
-                        invalidOptionsMessage = "DPS connection string require Sas or X509 credential";
+                        this.invalidOptionsMessage = "DPS connection string require Sas or X509 credential";
                     }
                 }
             }
@@ -115,21 +128,6 @@ namespace Rido
             this.X509Thumbprint = GetConnectionStringValue(map, nameof(this.X509Thumbprint));
             this.DcmId = GetConnectionStringValue(map, nameof(DcmId));
             ValidateParams();
-        }
-
-      
-
-        string GetConnectionStringValue(IDictionary<string, string> map, string propertyName)
-        {
-            if (!map.TryGetValue(propertyName, out string value))
-            {
-                _logger.LogInformation($"The connection string is missing the property: {propertyName}");
-            }
-            else
-            {
-                _logger.LogInformation($"Connection Property Found: {propertyName}={value}");
-            }
-            return value;
         }
     }
 }

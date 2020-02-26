@@ -10,7 +10,7 @@ namespace Rido
 {
     class DPS
     {
-        internal static async Task<DeviceClient> ProvisionDeviceWithSasKey(string scopeId, string deviceId, string deviceKey, string dcmId)
+        internal static async Task<DeviceClient> ProvisionDeviceWithSasKeyAsync(string scopeId, string deviceId, string deviceKey, string dcmId)
         {
             using (var transport = new ProvisioningTransportHandlerMqtt())
             {
@@ -30,20 +30,19 @@ namespace Rido
 
                     if (provResult.Status == ProvisioningRegistrationStatusType.Assigned)
                     {
-                        var csBuilder = IotHubConnectionStringBuilder.Create(provResult.AssignedHub,
-                            new DeviceAuthenticationWithRegistrySymmetricKey(provResult.DeviceId, security.GetPrimaryKey()));
+                        var csBuilder = IotHubConnectionStringBuilder.Create(provResult.AssignedHub,new DeviceAuthenticationWithRegistrySymmetricKey(provResult.DeviceId, security.GetPrimaryKey()));
                         string connectionString = csBuilder.ToString();
                         return DeviceClient.CreateFromConnectionString(connectionString, TransportType.Mqtt);
                     }
                     else
                     {
-                        throw new IotHubException("Cant register device, reason:" + provResult.ErrorMessage);
+                        throw new IotHubException($"Cant register device: {provResult.ErrorMessage}");
                     }
                 }
             }
         }
 
-        internal static async Task<DeviceClient> ProvisionDeviceWithCert(string scopeId, string X509Thumbprint, string dcmId)
+        internal static async Task<DeviceClient> ProvisionDeviceWithCertAsync(string scopeId, string X509Thumbprint, string dcmId)
         {
             using (var transport = new ProvisioningTransportHandlerMqtt())
             {
@@ -62,17 +61,13 @@ namespace Rido
                     }
                     if (provResult.Status == ProvisioningRegistrationStatusType.Assigned)
                     {
-                        var csBuilder = IotHubConnectionStringBuilder.Create(provResult.AssignedHub,
-                            new DeviceAuthenticationWithX509Certificate(provResult.DeviceId,
-                            security.GetAuthenticationCertificate()));
+                        var csBuilder = IotHubConnectionStringBuilder.Create(provResult.AssignedHub,new DeviceAuthenticationWithX509Certificate(provResult.DeviceId,security.GetAuthenticationCertificate()));
                         string connectionString = csBuilder.ToString();
-
-                        return DeviceClient.Create(provResult.AssignedHub,
-                            new DeviceAuthenticationWithX509Certificate(provResult.DeviceId, security.GetAuthenticationCertificate()), TransportType.Mqtt);
+                        return DeviceClient.Create(provResult.AssignedHub,new DeviceAuthenticationWithX509Certificate(provResult.DeviceId, security.GetAuthenticationCertificate()), TransportType.Mqtt);
                     }
                     else
                     {
-                        throw new IotHubException("Cant register device, reason:" + provResult.ErrorMessage);
+                        throw new IotHubException($"Cant register device: {provResult.ErrorMessage}");
                     }
                 }
             }
