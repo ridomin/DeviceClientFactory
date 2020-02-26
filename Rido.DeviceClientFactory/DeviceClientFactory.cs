@@ -30,7 +30,7 @@ namespace Rido
         internal string ScopeId { get; private set; }
         internal string DeviceId { get; private set; }
         internal string SharedAccessKey { get; private set; }
-        internal string X509Thumbprint { get; private set; }
+        internal string X509 { get; private set; }
         internal string DcmId { get; private set; }
 
         public DeviceClientFactory(string connectionString) : this(connectionString, new NullLogger<DeviceClientFactory>())
@@ -56,11 +56,11 @@ namespace Rido
                 case ConnectionStringType.DirectSas:
                     return await Task.FromResult(DeviceClient.CreateFromConnectionString(_connectionString, TransportType.Mqtt)).ConfigureAwait(false);
                 case ConnectionStringType.DirectCert:
-                    return await Task.FromResult(DeviceClient.Create(this.HostName, new DeviceAuthenticationWithX509Certificate(this.DeviceId, X509.FindCertFromLocalStore(this.X509Thumbprint)), TransportType.Mqtt)).ConfigureAwait(false);
+                    return await Task.FromResult(DeviceClient.Create(this.HostName, new DeviceAuthenticationWithX509Certificate(this.DeviceId, X509Loader.GetCertFromConnectionString(this.X509)), TransportType.Mqtt)).ConfigureAwait(false);
                 case ConnectionStringType.DPSSas:
                     return await DPS.ProvisionDeviceWithSasKeyAsync(this.ScopeId, this.DeviceId, this.SharedAccessKey, this.DcmId).ConfigureAwait(false);
                 case ConnectionStringType.DPSCert:
-                    return await DPS.ProvisionDeviceWithCertAsync(this.ScopeId, this.X509Thumbprint, this.DcmId).ConfigureAwait(false);
+                    return await DPS.ProvisionDeviceWithCertAsync(this.ScopeId, this.X509, this.DcmId).ConfigureAwait(false);
                 default:
                     return null;
             }
@@ -89,7 +89,7 @@ namespace Rido
                     {
                         this.connectionStringType = ConnectionStringType.DirectSas;
                     }
-                    else if (!string.IsNullOrWhiteSpace(this.X509Thumbprint) && !string.IsNullOrWhiteSpace(this.DeviceId)) // direct with cert
+                    else if (!string.IsNullOrWhiteSpace(this.X509) && !string.IsNullOrWhiteSpace(this.DeviceId)) // direct with cert
                     {
                         this.connectionStringType = ConnectionStringType.DirectCert;
                     }
@@ -104,7 +104,7 @@ namespace Rido
                     {
                         this.connectionStringType = ConnectionStringType.DPSSas;
                     }
-                    else if (!string.IsNullOrWhiteSpace(this.X509Thumbprint))
+                    else if (!string.IsNullOrWhiteSpace(this.X509))
                     {
                         this.connectionStringType = ConnectionStringType.DPSCert;
                     }
@@ -125,7 +125,7 @@ namespace Rido
             this.ScopeId = GetConnectionStringValue(map, nameof(this.ScopeId));
             this.DeviceId = GetConnectionStringValue(map, nameof(this.DeviceId));
             this.SharedAccessKey = GetConnectionStringValue(map, nameof(this.SharedAccessKey));
-            this.X509Thumbprint = GetConnectionStringValue(map, nameof(this.X509Thumbprint));
+            this.X509 = GetConnectionStringValue(map, nameof(this.X509));
             this.DcmId = GetConnectionStringValue(map, nameof(DcmId));
             ValidateParams();
         }

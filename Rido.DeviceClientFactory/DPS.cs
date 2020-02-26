@@ -42,11 +42,11 @@ namespace Rido
             }
         }
 
-        internal static async Task<DeviceClient> ProvisionDeviceWithCertAsync(string scopeId, string X509Thumbprint, string dcmId)
+        internal static async Task<DeviceClient> ProvisionDeviceWithCertAsync(string scopeId, string X509LocatorString, string dcmId)
         {
             using (var transport = new ProvisioningTransportHandlerMqtt())
             {
-                var cert = X509.FindCertFromLocalStore(X509Thumbprint);
+                var cert = X509Loader.GetCertFromConnectionString(X509LocatorString);
                 using (var security = new SecurityProviderX509Certificate(cert))
                 {
                     DeviceRegistrationResult provResult;

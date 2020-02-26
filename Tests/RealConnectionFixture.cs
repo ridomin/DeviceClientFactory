@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace RealTests
+namespace Tests
 {
     public class RealConnectionFixture
     {

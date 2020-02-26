@@ -2,9 +2,35 @@
 
 namespace Rido
 {
-    class X509
+    class X509Loader
     {
-        internal static X509Certificate2 FindCertFromLocalStore(object findValue, X509FindType findType = X509FindType.FindByThumbprint)
+
+        internal static X509Certificate2 GetCertFromConnectionString(string certParam)
+        {
+            if (certParam.Contains(".pfx")) //is pfx file
+            {
+                if (certParam.Contains("|")) //has password
+                {
+                    var parts = certParam.Split('|');
+                    return LoadCertFromFile(parts[0], parts[1]);
+                }
+                else // no password
+                {
+                    return LoadCertFromFile(certParam, string.Empty);
+                }
+            }
+            else // should be a thumbprint
+            {
+                return FindCertFromLocalStore(certParam);
+            }
+        }
+
+        static X509Certificate2 LoadCertFromFile(string pathToPfx, string password)
+        {
+            return new X509Certificate2(pathToPfx, password);
+        }
+
+        static X509Certificate2 FindCertFromLocalStore(object findValue, X509FindType findType = X509FindType.FindByThumbprint)
         {
             using (X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {

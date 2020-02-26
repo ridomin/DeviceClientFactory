@@ -7,23 +7,31 @@ namespace TestDevice
 {
     class Program
     {
-        const string directSas = "HostName=e2e-test-hub.azure-devices.net;DeviceId=test-01;SharedAccessKey=PfUZju2cm7huZKN1VtkIgL5pz2jMQzsPtGZqPG7Iv7s=";
-        const string directCert = "HostName=e2e-test-hub.azure-devices.net;DeviceId=test-cert-ca-01;X509Thumbprint=261AA9AE4024EA9AD23297C7C4C3C5579692445E";
+        const string directSas = "HostName=e2e-test-hub.azure-devices.net;DeviceId=test-sas-01;SharedAccessKey=pRNwmc8UU0fH6vnTZ50PmfqGffii5fWWLNfdQOaBsu8=";
+        const string directSSCert = "HostName=e2e-test-hub.azure-devices.net;DeviceId=test-ss-cert-01;X509=mycert.pfx|1234";
+        const string directCACert = "HostName=e2e-test-hub.azure-devices.net;DeviceId=test-cert-ca-01;X509=01632B87BED25142DD2F1337AA50CCF1B0F79831";
 
+        static ILogger logger = LoggerFactory.Create(builder => { builder.AddConsole(); }).CreateLogger("Cat1");
         static async Task Main(string[] args)
         {
-            var logger = LoggerFactory.Create(builder => { builder.AddConsole(); }).CreateLogger("Cat1");
+            await ConnectDevice(directSas, nameof(directSas)).ConfigureAwait(false);
+            await ConnectDevice(directSSCert, nameof(directSSCert)).ConfigureAwait(false);
+            await ConnectDevice(directCACert, nameof(directCACert)).ConfigureAwait(false);
+        }
 
-            var dcf = new DeviceClientFactory(directCert, logger);
+        private static async Task ConnectDevice(string cs, string name)
+        {
+            Console.WriteLine("Connecting: " + name);
+            var dcf = new DeviceClientFactory(cs, logger);
             var dc = await dcf.CreateDeviceClientAsync().ConfigureAwait(false);
 
             dc.SetConnectionStatusChangesHandler(
-                (Microsoft.Azure.Devices.Client.ConnectionStatus status, 
+                (Microsoft.Azure.Devices.Client.ConnectionStatus status,
                  Microsoft.Azure.Devices.Client.ConnectionStatusChangeReason reason) => Console.WriteLine(status));
 
             await dc.OpenAsync();
             await dc.CloseAsync();
-            Console.ReadLine();
+            Console.WriteLine("Finished: " + name);
         }
     }
 }
