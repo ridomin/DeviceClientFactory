@@ -19,6 +19,6 @@ jobs:
       run: dotnet pack -c Release Rido.DeviceClientFactory/Rido.DeviceClientFactory.csproj
     - name: Upload Artifacts
       uses: actions/upload-artifact@v1
-        with:
-          name: NuPkgs
-          path: Rido.DeviceClientFactory/bin/Release/*.nupkg
+      with:
+        name: NuPkgs
+        path: Rido.DeviceClientFactory/bin/Release/*.nupkg
