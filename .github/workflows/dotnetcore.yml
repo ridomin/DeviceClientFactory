@@ -13,6 +13,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.102
+    - name: Restore NuGets
+      run: dotnet restore -s "nuget.org"
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Test
