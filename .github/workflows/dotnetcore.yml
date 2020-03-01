@@ -26,3 +26,5 @@ jobs:
       with:
         name: NuPkgs
         path: ${{ steps.FindNupkgs.outputs.file }}
+    - name: Publish Packages
+      run: dotnet nuget push ${{ steps.FindNupkgs.outputs.file }} --source "github"
