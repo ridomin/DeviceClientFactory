@@ -1,4 +1,4 @@
-﻿using Rido;
+using Rido;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,7 +24,7 @@ namespace Tests
             Assert.NotNull(cert);
         }
 
-        [Fact]
+        //Fact]
         public void ParseCertConfigFromThumbprint()
         {
             string certConfigWithPassswd = "261aa9ae4024ea9ad23297c7c4c3c5579692445e";
