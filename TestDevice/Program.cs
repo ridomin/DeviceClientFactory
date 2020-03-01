@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Rido;
 using System;
 using System.Threading.Tasks;
@@ -16,7 +16,7 @@ namespace TestDevice
         {
             await ConnectDevice(directSas, nameof(directSas)).ConfigureAwait(false);
             await ConnectDevice(directSSCert, nameof(directSSCert)).ConfigureAwait(false);
-            await ConnectDevice(directCACert, nameof(directCACert)).ConfigureAwait(false);
+           // await ConnectDevice(directCACert, nameof(directCACert)).ConfigureAwait(false);
         }
 
         private static async Task ConnectDevice(string cs, string name)

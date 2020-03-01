@@ -1,10 +1,9 @@
-﻿using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Rido
 {
     class X509Loader
     {
-
         internal static X509Certificate2 GetCertFromConnectionString(string certParam)
         {
             if (certParam.Contains(".pfx")) //is pfx file

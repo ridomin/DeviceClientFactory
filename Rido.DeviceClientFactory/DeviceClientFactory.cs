@@ -68,6 +68,8 @@ namespace Rido
 
         void ParseConnectionString(string connectionString)
         {
+            _logger.LogInformation("Parsing: " + connectionString);
+            
             string GetConnectionStringValue(IDictionary<string, string> dict, string propertyName)
             {
                 if (!dict.TryGetValue(propertyName, out string value))
@@ -81,44 +83,47 @@ namespace Rido
                 return value;
             }
 
-            void ValidateParams()
+            ConnectionStringType ValidateParams()
             {
+                ConnectionStringType result = ConnectionStringType.Invalid;
                 if (!string.IsNullOrWhiteSpace(this.HostName)) //direct 
                 {
                     if (!string.IsNullOrWhiteSpace(this.DeviceId) && !string.IsNullOrWhiteSpace(this.SharedAccessKey)) // direct sas
                     {
-                        this.connectionStringType = ConnectionStringType.DirectSas;
+                        result = ConnectionStringType.DirectSas;
                     }
                     else if (!string.IsNullOrWhiteSpace(this.X509) && !string.IsNullOrWhiteSpace(this.DeviceId)) // direct with cert
                     {
-                        this.connectionStringType = ConnectionStringType.DirectCert;
+                        result = ConnectionStringType.DirectCert;
                     }
                     else
                     {
-                        this.invalidOptionsMessage = "Direct connection string require Sas or X509 credential";
+                        this._logger.LogWarning("Connection string require Sas or X509 credential");
                     }
                 }
                 else if (!string.IsNullOrWhiteSpace(this.ScopeId)) // use DPS 
                 {
                     if (!string.IsNullOrWhiteSpace(this.SharedAccessKey)) // use group enrollment key
                     {
-                        this.connectionStringType = ConnectionStringType.DPSSas;
+                        result = ConnectionStringType.DPSSas;
                     }
                     else if (!string.IsNullOrWhiteSpace(this.X509))
                     {
-                        this.connectionStringType = ConnectionStringType.DPSCert;
+                        result = ConnectionStringType.DPSCert;
                     }
                     else
                     {
-                        this.invalidOptionsMessage = "DPS connection string require Sas or X509 credential";
+                        this._logger.LogWarning("Connection string require Sas or X509 credential");
                     }
                 }
+
+                return result;
             }
 
-            _logger.LogInformation("Parsing: " + connectionString);
             IDictionary<string, string> map = connectionString.ToDictionary(';', '=');
             if (map==null)
             {
+                _logger.LogError("Cannot parse connection string");
                 return;
             }    
             this.HostName = GetConnectionStringValue(map, nameof(this.HostName));
@@ -127,7 +132,10 @@ namespace Rido
             this.SharedAccessKey = GetConnectionStringValue(map, nameof(this.SharedAccessKey));
             this.X509 = GetConnectionStringValue(map, nameof(this.X509));
             this.DcmId = GetConnectionStringValue(map, nameof(DcmId));
-            ValidateParams();
+            this.connectionStringType = ValidateParams();
+            
+            _logger.LogInformation($"Connection Tyoe: {this.connectionStringType}");
+
         }
     }
 }
