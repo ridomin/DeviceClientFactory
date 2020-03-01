@@ -6,6 +6,8 @@ This library is available as a NuGet package.
 
 [![Nuget](https://img.shields.io/nuget/vpre/Rido.DeviceClientFactory?style=flat-square)](https://www.nuget.org/packages/Rido.DeviceClientFactory)
 
+![.NET Core](https://github.com/ridomin/DeviceClientFactory/workflows/.NET%20Core/badge.svg)
+
 ## Sample Code
 
 ```cs
