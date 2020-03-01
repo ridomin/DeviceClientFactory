@@ -20,7 +20,7 @@ jobs:
     - name: Pack 
       run: dotnet pack --no-build -c Release Rido.DeviceClientFactory/Rido.DeviceClientFactory.csproj
     - id: FindNupkgs
-      run: echo "::set-output name=file::$(ls Rido.DeviceClientFactory/bin/Release/*.nupkg)"
+      run: echo "::set-output name=file::$(ls Rido.DeviceClientFactory/bin/Release/*.*nupkg)"
     - name: Upload Artifacts
       uses: actions/upload-artifact@v1
       with:
