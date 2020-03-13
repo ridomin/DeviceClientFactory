@@ -1,3 +1,4 @@
+using System;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Rido
@@ -6,22 +7,28 @@ namespace Rido
     {
         internal static X509Certificate2 GetCertFromConnectionString(string certParam)
         {
+            X509Certificate2 result = null;
             if (certParam.Contains(".pfx")) //is pfx file
             {
                 if (certParam.Contains("|")) //has password
                 {
                     var parts = certParam.Split('|');
-                    return LoadCertFromFile(parts[0], parts[1]);
+                    result =  LoadCertFromFile(parts[0], parts[1]);
                 }
                 else // no password
                 {
-                    return LoadCertFromFile(certParam, string.Empty);
+                    result = LoadCertFromFile(certParam, string.Empty);
                 }
             }
             else // should be a thumbprint
             {
-                return FindCertFromLocalStore(certParam);
+                result = FindCertFromLocalStore(certParam);
             }
+            if (result==null)
+            {
+                throw new ArgumentException($"Certificate '{certParam}' not found.");
+            }
+            return result;
         }
 
         static X509Certificate2 LoadCertFromFile(string pathToPfx, string password)
