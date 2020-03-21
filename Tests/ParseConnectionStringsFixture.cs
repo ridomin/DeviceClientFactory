@@ -14,9 +14,9 @@ namespace Tests
         [InlineData("ScopeId=0ne12312;X509=1231231423459243859328;DcmId=urn:company:interface:1")]
         public void ValidConnectingString(string connectionString)
         {
-            var deviceFactory = new DeviceClientFactory(connectionString);
+            var deviceFactory = DeviceClientFactory.CreateDeviceClientAsync(connectionString);
             Assert.NotNull(deviceFactory);   
-            Assert.NotEqual(ConnectionStringType.Invalid, deviceFactory.connectionStringType);
+            Assert.NotEqual(ConnectionStringType.Invalid, DeviceClientFactory.Instance.connectionStringType);
         }
 
         [Theory]
@@ -26,9 +26,14 @@ namespace Tests
         [InlineData("hostname=aa;noscret=")]
         public void InvalidConnectingString(string connectionString)
         {
-            var deviceFactory = new DeviceClientFactory(connectionString);
-            Assert.NotNull(deviceFactory);
-            Assert.Equal(ConnectionStringType.Invalid,  deviceFactory.connectionStringType);
+            try
+            {
+                var deviceFactory = DeviceClientFactory.CreateDeviceClientAsync(connectionString);
+            }
+            catch (ApplicationException)
+            {
+                Assert.Equal(ConnectionStringType.Invalid, DeviceClientFactory.Instance.connectionStringType);
+            }
         }
     }
 }
