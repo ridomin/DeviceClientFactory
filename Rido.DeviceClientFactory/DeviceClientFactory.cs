@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 [assembly: InternalsVisibleToAttribute("Tests")]
@@ -20,11 +21,10 @@ namespace Rido
 
     public class DeviceClientFactory
     {
-        readonly string _connectionString;
         readonly ILogger _logger;
 
         internal ConnectionStringType connectionStringType = ConnectionStringType.Invalid;
-        string invalidOptionsMessage = string.Empty;
+        readonly string invalidOptionsMessage = string.Empty;
 
         internal string HostName { get; private set; }
         internal string ScopeId { get; private set; }
@@ -33,34 +33,45 @@ namespace Rido
         internal string X509 { get; private set; }
         internal string DcmId { get; private set; }
 
+        static public DeviceClientFactory Instance { get; private set; }
+
+        [Obsolete("From v02 use the static method CreateDeviceClientAsync.")]
         public DeviceClientFactory(string connectionString) : this(connectionString, new NullLogger<DeviceClientFactory>())
         {
         }
 
+        [Obsolete("From v02 use the static method CreateDeviceClientAsync.")]
         public DeviceClientFactory(string connectionString, ILogger logger)
         {
             _logger = logger;
-            _connectionString = connectionString;
             this.ParseConnectionString(connectionString);
         }
 
-        public async Task<DeviceClient> CreateDeviceClientAsync()
+        public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString)
         {
-                if (connectionStringType.Equals(ConnectionStringType.Invalid))
-            {
-                throw new ApplicationException("Invalid connection string: " + invalidOptionsMessage);
-            }
+            return await CreateDeviceClientAsync(connectionString, new NullLogger<DeviceClientFactory>());
+        }
 
-            switch (connectionStringType)
+        public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString, ILogger logger)
+        {
+#pragma warning disable CS0618 // Type or member is obsolete
+            var dcf = new DeviceClientFactory(connectionString, logger);
+#pragma warning restore CS0618 // Type or member is obsolete
+            if (dcf.connectionStringType.Equals(ConnectionStringType.Invalid))
+            {
+                throw new ApplicationException("Invalid connection string: " + dcf.invalidOptionsMessage);
+            }
+            Instance = dcf;
+            switch (dcf.connectionStringType)
             {
                 case ConnectionStringType.DirectSas:
-                    return await Task.FromResult(DeviceClient.CreateFromConnectionString(_connectionString, TransportType.Mqtt)).ConfigureAwait(false);
+                    return await Task.FromResult(DeviceClient.CreateFromConnectionString(connectionString, TransportType.Mqtt)).ConfigureAwait(false);
                 case ConnectionStringType.DirectCert:
-                    return await Task.FromResult(DeviceClient.Create(this.HostName, new DeviceAuthenticationWithX509Certificate(this.DeviceId, X509Loader.GetCertFromConnectionString(this.X509)), TransportType.Mqtt)).ConfigureAwait(false);
+                    return await Task.FromResult(DeviceClient.Create(dcf.HostName, new DeviceAuthenticationWithX509Certificate(dcf.DeviceId, X509Loader.GetCertFromConnectionString(dcf.X509, logger)), TransportType.Mqtt)).ConfigureAwait(false);
                 case ConnectionStringType.DPSSas:
-                    return await DPS.ProvisionDeviceWithSasKeyAsync(this.ScopeId, this.DeviceId, this.SharedAccessKey, this.DcmId).ConfigureAwait(false);
+                    return await DPS.ProvisionDeviceWithSasKeyAsync(dcf.ScopeId, dcf.DeviceId, dcf.SharedAccessKey, dcf.DcmId, logger).ConfigureAwait(false);
                 case ConnectionStringType.DPSCert:
-                    return await DPS.ProvisionDeviceWithCertAsync(this.ScopeId, this.X509, this.DcmId).ConfigureAwait(false);
+                    return await DPS.ProvisionDeviceWithCertAsync(dcf.ScopeId, dcf.X509, dcf.DcmId, logger).ConfigureAwait(false);
                 default:
                     return null;
             }

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Cryptography.X509Certificates;
 
@@ -5,7 +6,7 @@ namespace Rido
 {
     class X509Loader
     {
-        internal static X509Certificate2 GetCertFromConnectionString(string certParam)
+        internal static X509Certificate2 GetCertFromConnectionString(string certParam, ILogger log)
         {
             X509Certificate2 result = null;
             if (certParam.Contains(".pfx")) //is pfx file
@@ -13,19 +14,23 @@ namespace Rido
                 if (certParam.Contains("|")) //has password
                 {
                     var parts = certParam.Split('|');
+                    log.LogInformation($"Loading cert from {parts[0]} pfx with pwd");
                     result =  LoadCertFromFile(parts[0], parts[1]);
                 }
                 else // no password
                 {
+                    log.LogInformation($"Loading cert from {certParam} pfx with no pwd");
                     result = LoadCertFromFile(certParam, string.Empty);
                 }
             }
             else // should be a thumbprint
             {
+                log.LogInformation($"Loading cert from store by thumprint: {certParam} ");
                 result = FindCertFromLocalStore(certParam);
             }
             if (result==null)
             {
+                log.LogError("Certificate not found !!");
                 throw new ArgumentException($"Certificate '{certParam}' not found.");
             }
             return result;
