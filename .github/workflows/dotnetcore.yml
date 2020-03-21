@@ -25,4 +25,4 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: NuPkgs
-        path: ${{ steps.FindNupkgs.outputs.file }}
+        path: "Rido.DeviceClientFactory/bin/Release/*.*"
