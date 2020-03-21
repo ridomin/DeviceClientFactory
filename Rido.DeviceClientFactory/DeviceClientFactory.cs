@@ -46,7 +46,7 @@ namespace Rido
 
         public async Task<DeviceClient> CreateDeviceClientAsync()
         {
-            if (connectionStringType.Equals(ConnectionStringType.Invalid))
+                if (connectionStringType.Equals(ConnectionStringType.Invalid))
             {
                 throw new ApplicationException("Invalid connection string: " + invalidOptionsMessage);
             }
