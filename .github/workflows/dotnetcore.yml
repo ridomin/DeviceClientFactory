@@ -25,11 +25,11 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: NuPkgs
-        path: "Rido.DeviceClientFactory/bin/Release/Rido.DeviceClientFactory.0.2.0-preview1.nupkg"
+        path: "Rido.DeviceClientFactory/bin/Release/Rido.DeviceClientFactory.*.nupkg"
     - name: Upload Symbols
       uses: actions/upload-artifact@v1
       with:
         name: NuPkgs
-        path: "Rido.DeviceClientFactory/bin/Release/Rido.DeviceClientFactory.0.2.0-preview1.snupkg"
+        path: "Rido.DeviceClientFactory/bin/Release/Rido.DeviceClientFactory.*.snupkg"
                 
         
