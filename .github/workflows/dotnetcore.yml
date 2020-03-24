@@ -20,16 +20,19 @@ jobs:
     - name: Pack 
       run: dotnet pack --no-build -c Release Rido.DeviceClientFactory/Rido.DeviceClientFactory.csproj
     - id: FindNupkgs
-      run: echo "::set-output name=file::$(ls Rido.DeviceClientFactory/bin/Release/*.*nupkg)"
-    - name: Upload Nupkg
+      run: echo "::set-output name=file::$(ls Rido.DeviceClientFactory/bin/Release/*.nupkg)"
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v1
       with:
         name: NuPkgs
-        path: "Rido.DeviceClientFactory/bin/Release/Rido.DeviceClientFactory.*.nupkg"
-    - name: Upload Symbols
-      uses: actions/upload-artifact@v1
-      with:
-        name: NuPkgs
-        path: "Rido.DeviceClientFactory/bin/Release/Rido.DeviceClientFactory.*.snupkg"
+        path: ${{ steps.FindNupkgs.outputs.file }}
+    - id: FindSymbolsNupkgs
+        run: echo "::set-output name=file::$(ls Rido.DeviceClientFactory/bin/Release/*.snupkg)"
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: NuPkgs
+          path: ${{ steps.FindSymbolsNupkgs.outputs.file }}
+
                 
         
