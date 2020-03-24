@@ -47,11 +47,24 @@ namespace Rido
             this.ParseConnectionString(connectionString);
         }
 
+        /// <summary>
+        /// Creates a DeviceClient using an augmented connection string, supporting DPS, SasKeys, X509 and including PnP registration with the DCM Id.
+        /// See https://github.com/ridomin/deviceclientfactory/ for more connection string samples.
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <returns></returns>
         public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString)
         {
             return await CreateDeviceClientAsync(connectionString, new NullLogger<DeviceClientFactory>());
         }
 
+        /// <summary>
+        /// Creates a DeviceClient using an augmented connection string, supporting DPS, SasKeys, X509 and including PnP registration with the DCM Id.
+        /// See https://github.com/ridomin/deviceclientfactory/ for more connection string samples.
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <param name="logger"></param>
+        /// <returns></returns>
         public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString, ILogger logger)
         {
 #pragma warning disable CS0618 // Type or member is obsolete
