@@ -8,7 +8,7 @@ namespace Rido
     {
         internal static X509Certificate2 GetCertFromConnectionString(string certParam, ILogger log)
         {
-            X509Certificate2 result = null;
+            X509Certificate2 result;
             if (certParam.Contains(".pfx")) //is pfx file
             {
                 if (certParam.Contains("|")) //has password
