@@ -11,8 +11,7 @@ This library is available as a NuGet package.
 ## Sample Code
 
 ```cs
-var deviceFactory = new DeviceClientFactory(_connectionString, _logger);
-var deviceClient = await deviceFactory.CreateDeviceClientAsync().ConfigureAwait(false);
+var deviceClient = await DeviceClientFactory.CreateDeviceClientAsync(_connectionString, _logger);
 ```
 
 ## Sample connection strings
