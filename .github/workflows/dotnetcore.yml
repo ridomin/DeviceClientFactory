@@ -24,15 +24,15 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v1
       with:
-        name: NuPkgs
-        path: ${{ steps.FindNupkgs.outputs.file }}
+      name: NuPkgs
+      path: ${{ steps.FindNupkgs.outputs.file }}
     - id: FindSymbolsNupkgs
-        run: echo "::set-output name=file::$(ls Rido.DeviceClientFactory/bin/Release/*.snupkg)"
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: NuPkgs
-          path: ${{ steps.FindSymbolsNupkgs.outputs.file }}
+      run: echo "::set-output name=file::$(ls Rido.DeviceClientFactory/bin/Release/*.snupkg)"
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+      name: NuPkgs
+      path: ${{ steps.FindSymbolsNupkgs.outputs.file }}
 
                 
         
