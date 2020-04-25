@@ -1,3 +1,5 @@
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/ridomin/DeviceClientFactory) 
+
 # DeviceClientFactory
 
 This library extends the basic IoT connection string to support additional scenarios such as DPS and certificates.
