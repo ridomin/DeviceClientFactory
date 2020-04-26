@@ -15,12 +15,15 @@ namespace TestDevice
 
         const string DPSCert = "ScopeID=0ne000C6BF3;DcmId=urn:rigado:S1_Sensor:3;X509=08B7EAEC77B9061F05385D54EE4CC00EA754DB36";
 
+        const string DPSSas = "ScopeID=0ne000DE9FB;DcmId=urn:rido:samples:dotnetdevice:1;DeviceId=dotnet-device-01;SharedAccessKey=Df9WsVdY/J4FexohsBTX/lr8sHmKZJZKHUgQrHC0qco=";
+
         static readonly ILogger logger = LoggerFactory.Create(builder => { builder.AddConsole(); }).CreateLogger("Cat1");
         static async Task Main()
         {
             //await ConnectDevice(unauthorizedCert, nameof(unauthorizedCert)).ConfigureAwait(false);
             //await ConnectDevice(directCACert, nameof(directCACert)).ConfigureAwait(false);
-            await ConnectDevice(DPSCert, nameof(DPSCert)).ConfigureAwait(false);
+            await ConnectDevice(DPSSas, nameof(DPSSas)).ConfigureAwait(false);
+
             await ConnectDevice(directSSCert, nameof(directSSCert)).ConfigureAwait(false);
             await ConnectDevice(directSas, nameof(directSas)).ConfigureAwait(false);
         }
