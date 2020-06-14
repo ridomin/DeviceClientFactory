@@ -6,4 +6,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Rido.DeviceClientFactory" Version="0.3.0-preview1" />
+  </ItemGroup>
+
 </Project>
