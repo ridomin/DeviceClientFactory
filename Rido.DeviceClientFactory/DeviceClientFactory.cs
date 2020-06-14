@@ -19,6 +19,13 @@ namespace Rido
     DPSCert,
   }
 
+  enum ModelAnnoucement
+  {
+    OnConnectionOnly = 0,
+    OnProvisioningOnly,
+    All
+  }
+
   public class DeviceClientFactory
   {
     readonly ILogger logger;
