@@ -11,7 +11,7 @@ namespace Tests
 {
     public class RealConnectionFixture
     {
-        [Fact]
+        //Fact]
         public async Task DirectWithSas()
         {
             ConnectionStatus reportedStatus = ConnectionStatus.Disconnected;
