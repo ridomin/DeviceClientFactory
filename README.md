@@ -1,3 +1,5 @@
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/ridomin/DeviceClientFactory) 
+
 # DeviceClientFactory
 
 This library extends the basic IoT connection string to support additional scenarios such as DPS and certificates.
@@ -11,8 +13,7 @@ This library is available as a NuGet package.
 ## Sample Code
 
 ```cs
-var deviceFactory = new DeviceClientFactory(_connectionString, _logger);
-var deviceClient = await deviceFactory.CreateDeviceClientAsync().ConfigureAwait(false);
+var deviceClient = await DeviceClientFactory.CreateDeviceClientAsync(_connectionString, _logger);
 ```
 
 ## Sample connection strings
@@ -20,6 +21,11 @@ var deviceClient = await deviceFactory.CreateDeviceClientAsync().ConfigureAwait(
 *Direct connection string* - connect to Hub only
 ```
 HostName=myhub.azure-devices.net;DeviceId=myDevice;SharedAccessKey=asd8f789fa9s8u9suf9s8udf9as8uf8d
+```
+
+*Direct connection string with Model Id* - PnP Discovery
+```
+HostName=myhub.azure-devices.net;DeviceId=myDevice;SharedAccessKey=asd8f789fa9s8u9suf9s8udf9as8uf8d;ModelId=dtmi:company:interface;1
 ```
 
 *ScopeId + Sas Key* - connect to Hub+DPS or Central, Device Key must be generated with `dps-keygen` using the masterkey
@@ -33,9 +39,9 @@ ScopeId=0ne12312;X509=1231231423459243859328
 ```
 The certificate must be avaiable, within the private key, in the `CurrentUser\My` cert store or as a pfx file
 
-*ScopeId + DCM + Sas or X509* connect to Hub+DPS or Central using a DCM Id
+*ScopeId + DCM + Sas or X509* connect to Hub+DPS or Central using a Model Id
 ```
-ScopeId=0ne12312;X509T=1231231423459243859328;DcmId=urn:company:interface:1
+ScopeId=0ne12312;X509T=1231231423459243859328;ModelId=dtmi:company:interface;1
 ```
 
 ### Note about certificates

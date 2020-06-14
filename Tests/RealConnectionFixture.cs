@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.Devices.Client;
+using Microsoft.Azure.Devices.Client;
 using Microsoft.Azure.Devices.Shared;
 using Rido;
 using System;
@@ -11,7 +11,7 @@ namespace Tests
 {
     public class RealConnectionFixture
     {
-        [Fact]
+        //Fact]
         public async Task DirectWithSas()
         {
             ConnectionStatus reportedStatus = ConnectionStatus.Disconnected;
