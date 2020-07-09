@@ -1,5 +1,5 @@
 mode: ContinuousDeployment
-branches: {master}
+branches: {}
 ignore:
   sha: []
 merge-message-formats: {}
