@@ -44,15 +44,16 @@ namespace Rido
     static public DeviceClientFactory Instance { get; private set; }
 
     
-    private DeviceClientFactory(string connectionString) : this(connectionString, new NullLogger<DeviceClientFactory>())
+    private DeviceClientFactory(string connectionString) : this(connectionString, new NullLogger<DeviceClientFactory>(), "")
     {
     }
 
     
-    private DeviceClientFactory(string connectionString, ILogger logger)
+    private DeviceClientFactory(string connectionString, ILogger logger, string modelId)
     {
       this.logger = logger;
       this.ConnectionString = connectionString;
+      this.ModelId = modelId;
       this.ParseConnectionString(connectionString);
     }
 
@@ -62,9 +63,9 @@ namespace Rido
     /// </summary>
     /// <param name="connectionString"></param>
     /// <returns></returns>
-    public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString)
+    public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString, string modelId = "")
     {
-      return await CreateDeviceClientAsync(connectionString, new NullLogger<DeviceClientFactory>());
+      return await CreateDeviceClientAsync(connectionString, new NullLogger<DeviceClientFactory>(), modelId);
     }
 
     /// <summary>
@@ -74,9 +75,9 @@ namespace Rido
     /// <param name="connectionString"></param>
     /// <param name="logger"></param>
     /// <returns></returns>
-    public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString, ILogger logger)
+    public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString, ILogger logger, string modelId)
     {
-      var dcf = new DeviceClientFactory(connectionString, logger);
+      var dcf = new DeviceClientFactory(connectionString, logger, modelId);
       if (dcf.connectionStringType.Equals(ConnectionStringType.Invalid))
       {
         throw new ApplicationException("Invalid connection string: " + dcf.invalidOptionsMessage);
@@ -163,7 +164,12 @@ namespace Rido
       this.DeviceId = GetConnectionStringValue(map, nameof(this.DeviceId));
       this.SharedAccessKey = GetConnectionStringValue(map, nameof(this.SharedAccessKey));
       this.X509 = GetConnectionStringValue(map, nameof(this.X509));
-      this.ModelId = GetConnectionStringValue(map, nameof(ModelId));
+      
+      if (string.IsNullOrEmpty(this.ModelId))
+      {
+        this.ModelId = GetConnectionStringValue(map, nameof(ModelId));
+      }
+
       this.connectionStringType = ValidateParams();
 
       logger.LogInformation($"Connection Tyoe: {this.connectionStringType}");
