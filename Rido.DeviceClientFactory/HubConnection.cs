@@ -9,26 +9,48 @@ namespace Rido
 {
   class HubConnection
   {
-    public static async Task<DeviceClient> CreateClientFromConnectionString(DeviceClientFactory dcf, ILogger logger)
+    public static async Task<DeviceClient> CreateClientFromConnectionString(string connectionString, ILogger logger, string modelId = "")
     {
-      var client = DeviceClient.CreateFromConnectionString(
-        dcf.ConnectionString,
-        TransportType.Mqtt,
-        new ClientOptions { ModelId = dcf.ModelId });
+      DeviceClient client;
+      if (String.IsNullOrEmpty(modelId))
+      {
+        client = DeviceClient.CreateFromConnectionString(
+          connectionString,
+          TransportType.Mqtt);
+      }
+      else
+      {
+        client = DeviceClient.CreateFromConnectionString(
+          connectionString,
+          TransportType.Mqtt,
+          new ClientOptions { ModelId = modelId });
 
-      logger.LogWarning($"Device {dcf.DeviceId} connected to {dcf.HostName} via {dcf.connectionStringType}");
+      }
+      logger.LogWarning($"Device connected: " + connectionString);
       return await Task.FromResult(client);
     }
 
-    public static async Task<DeviceClient> CreateClientFromCert(DeviceClientFactory dcf, ILogger logger)
+    public static async Task<DeviceClient> CreateClientFromCert(string hostName, string deviceId, string x509, ILogger logger, string modelId = "")
     {
-      var client = DeviceClient.Create(dcf.HostName,
+      DeviceClient client;
+      if (String.IsNullOrWhiteSpace(modelId))
+      {
+        client = DeviceClient.Create(hostName,
+         new DeviceAuthenticationWithX509Certificate(
+           deviceId,
+           X509Loader.GetCertFromConnectionString(x509, logger)),
+         TransportType.Mqtt);
+      }
+      else
+      {
+        client = DeviceClient.Create(hostName,
           new DeviceAuthenticationWithX509Certificate(
-            dcf.DeviceId,
-            X509Loader.GetCertFromConnectionString(dcf.X509, logger)),
+            deviceId,
+            X509Loader.GetCertFromConnectionString(x509, logger)),
           TransportType.Mqtt,
-          new ClientOptions { ModelId = dcf.ModelId });
-      logger.LogWarning($"Device {dcf.DeviceId} connected to {dcf.HostName} via {dcf.connectionStringType}");
+          new ClientOptions { ModelId = modelId });
+      }
+      logger.LogWarning($"Device {deviceId} connected to {hostName}");
       return await Task.FromResult(client);
     }
 
