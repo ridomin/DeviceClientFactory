@@ -37,7 +37,7 @@ namespace Rido
             log.LogInformation($"LastRefresh {provResult.LastUpdatedDateTimeUtc} RegistrationId {provResult.RegistrationId}");
             var csBuilder = IotHubConnectionStringBuilder.Create(provResult.AssignedHub, new DeviceAuthenticationWithRegistrySymmetricKey(provResult.DeviceId, security.GetPrimaryKey()));
             string connectionString = csBuilder.ToString();
-            return DeviceClient.CreateFromConnectionString(connectionString, TransportType.Mqtt, new ClientOptions { ModelId = modelId } );
+            return await HubConnection.CreateClientFromConnectionString(connectionString, log, modelId);
           }
           else
           {
@@ -76,7 +76,17 @@ namespace Rido
 
             var csBuilder = IotHubConnectionStringBuilder.Create(provResult.AssignedHub, new DeviceAuthenticationWithX509Certificate(provResult.DeviceId, security.GetAuthenticationCertificate()));
             string connectionString = csBuilder.ToString();
-            return DeviceClient.Create(provResult.AssignedHub, new DeviceAuthenticationWithX509Certificate(provResult.DeviceId, security.GetAuthenticationCertificate()), TransportType.Mqtt, new ClientOptions { ModelId = modelId });
+
+            DeviceClient client;
+            if (string.IsNullOrEmpty(modelId))
+            {
+              client = DeviceClient.Create(provResult.AssignedHub, new DeviceAuthenticationWithX509Certificate(provResult.DeviceId, security.GetAuthenticationCertificate()), TransportType.Mqtt);
+            }
+            else
+            {
+              client = DeviceClient.Create(provResult.AssignedHub, new DeviceAuthenticationWithX509Certificate(provResult.DeviceId, security.GetAuthenticationCertificate()), TransportType.Mqtt, new ClientOptions { ModelId = modelId });
+            }
+            return client;
           }
           else
           {
