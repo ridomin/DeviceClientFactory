@@ -81,9 +81,9 @@ namespace Rido
       switch (dcf.connectionStringType)
       {
         case ConnectionStringType.DirectSas:
-          return await HubConnection.CreateClientFromConnectionString(dcf, logger);
+          return await HubConnection.CreateClientFromConnectionString(dcf.ConnectionString, logger, dcf.ModelId);
         case ConnectionStringType.DirectCert:
-          return await HubConnection.CreateClientFromCert(dcf, logger);
+          return await HubConnection.CreateClientFromCert(dcf.HostName, dcf.DeviceId, dcf.X509, logger, dcf.ModelId);
         case ConnectionStringType.DPSSas:
           return await DPS.ProvisionDeviceWithSasKeyAsync(dcf.ScopeId, dcf.DeviceId, dcf.SharedAccessKey, dcf.ModelId, logger).ConfigureAwait(false);
         case ConnectionStringType.DPSCert:
