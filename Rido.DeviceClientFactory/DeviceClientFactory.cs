@@ -43,13 +43,13 @@ namespace Rido
 
     static public DeviceClientFactory Instance { get; private set; }
 
-    [Obsolete("From v02 use the static method CreateDeviceClientAsync.")]
-    public DeviceClientFactory(string connectionString) : this(connectionString, new NullLogger<DeviceClientFactory>())
+    
+    private DeviceClientFactory(string connectionString) : this(connectionString, new NullLogger<DeviceClientFactory>())
     {
     }
 
-    [Obsolete("From v02 use the static method CreateDeviceClientAsync.")]
-    public DeviceClientFactory(string connectionString, ILogger logger)
+    
+    private DeviceClientFactory(string connectionString, ILogger logger)
     {
       this.logger = logger;
       this.ConnectionString = connectionString;
@@ -76,9 +76,7 @@ namespace Rido
     /// <returns></returns>
     public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString, ILogger logger)
     {
-#pragma warning disable CS0618 // Type or member is obsolete
       var dcf = new DeviceClientFactory(connectionString, logger);
-#pragma warning restore CS0618 // Type or member is obsolete
       if (dcf.connectionStringType.Equals(ConnectionStringType.Invalid))
       {
         throw new ApplicationException("Invalid connection string: " + dcf.invalidOptionsMessage);
