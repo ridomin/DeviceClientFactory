@@ -102,7 +102,7 @@ namespace Rido
     {
       return new ProvisioningRegistrationAdditionalData
       {
-        JsonData = "{ iotcModelId: '" + modelId + "'}"
+        JsonData = "{ modelId: '" + modelId + "'}"
       };
     }
   }
