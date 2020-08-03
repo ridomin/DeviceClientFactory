@@ -17,6 +17,7 @@ namespace TestDevice
         const string dps_pnp = "ScopeID=0ne000DE9FB;DeviceId=dn-st-01;SharedAccessKey=KluDLBpM0LD01AvxWipHE7bvWhZe9Q56aLzQDzQ3Sj8=;ModelId=dtmi:com:example:Thermostat;1";
 
 
+
         static readonly ILogger logger = LoggerFactory.Create(builder => { builder.AddConsole(); }).CreateLogger("Cat1");
         static async Task Main()
         {
@@ -30,8 +31,9 @@ namespace TestDevice
 
         private static async Task ConnectDevice(string cs, string name)
         {
+            var modelId="dtmi:com:example:Thermostat;1";
             Console.WriteLine("Connecting: " + name);
-            var dc = await DeviceClientFactory.CreateDeviceClientAsync(cs, logger).ConfigureAwait(false);
+            var dc = await DeviceClientFactory.CreateDeviceClientAsync(cs, logger, modelId).ConfigureAwait(false);
 
             dc.SetConnectionStatusChangesHandler(
                 (Microsoft.Azure.Devices.Client.ConnectionStatus status,
