@@ -107,11 +107,11 @@ namespace Rido
       {
         if (!dict.TryGetValue(propertyName, out string value))
         {
-          logger.LogInformation($"The connection string is missing the property: {propertyName}");
+          logger.LogTrace($"The connection string is missing the property: {propertyName}");
         }
         else
         {
-          logger.LogInformation($"Connection Property Found: {propertyName}={value}");
+          logger.LogTrace($"Connection Property Found: {propertyName}={value}");
         }
         return value;
       }
