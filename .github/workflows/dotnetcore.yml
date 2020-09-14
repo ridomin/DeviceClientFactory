@@ -30,6 +30,6 @@ jobs:
       run: |
         for f in ./Rido.DeviceClientFactory/bin/Release/*pkg
         do
-          dotnet nuget push @$f -Source "GPR" 
+          dotnet nuget push @$f --source "GPR" 
         done
       shell: bash
