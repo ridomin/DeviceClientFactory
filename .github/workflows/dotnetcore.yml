@@ -28,7 +28,7 @@ jobs:
       
     - name: Push generated package to GitHub registry
       run: |
-        for f in ./Rido.DeviceClientFactory/bin/Release/*pkg
+        for f in ./Rido.DeviceClientFactory/bin/Release/*.nupkg
         do
           dotnet nuget push @$f --source "GPR" 
         done
