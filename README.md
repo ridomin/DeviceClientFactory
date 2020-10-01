@@ -13,7 +13,7 @@ This library is available as a NuGet package.
 ## Sample Code
 
 ```cs
-var deviceClient = await DeviceClientFactory.CreateDeviceClientAsync(_connectionString, _logger);
+var deviceClient = await DeviceClientFactory.CreateDeviceClientAsync(connectionString, logger, modelId);
 ```
 
 ## Sample connection strings
