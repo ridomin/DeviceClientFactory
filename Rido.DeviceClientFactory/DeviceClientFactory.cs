@@ -142,7 +142,6 @@ namespace Rido
                         this.logger.LogWarning("Connection string require Sas or X509 credential");
                     }
                 }
-
                 return result;
             }
 
