@@ -9,6 +9,31 @@ using System.Threading.Tasks;
 
 namespace Rido
 {
+    static class Extensions
+    {
+        static int times = 1;
+        static ProvisioningRegistrationAdditionalData GetProvisionPayload(string modelId)
+        {
+            return new ProvisioningRegistrationAdditionalData
+            {
+                JsonData = "{ modelId: '" + modelId + "'}"
+            };
+        }
+
+        public static async Task<DeviceRegistrationResult> RegisterWithModelAsync(this ProvisioningDeviceClient dpsClient, string modelId, ILogger log)
+        {
+            var res = await dpsClient.RegisterAsync(GetProvisionPayload(modelId));
+            log.LogInformation("First DPS call with Model ID, result: " + res.Status);
+            while (res.Status != ProvisioningRegistrationStatusType.Assigned && times++ < 3)
+            {
+                res = await dpsClient.RegisterAsync(GetProvisionPayload(modelId));
+                log.LogInformation($"Next DPS call: {times} with Model ID, result: " + res.Status);
+                await Task.Delay((2 ^ times) * 1000);
+            }
+            return res;
+        }
+    }
+
     class DPS
     {
         internal static async Task<DeviceClient> ProvisionDeviceWithSasKeyAsync(string scopeId, string deviceId, string deviceKey, string modelId, ILogger log)
@@ -22,7 +47,7 @@ namespace Rido
 
                     if (!string.IsNullOrEmpty(modelId))
                     {
-                        provResult = await provClient.RegisterAsync(GetProvisionPayload(modelId)).ConfigureAwait(false);
+                        provResult = await provClient.RegisterWithModelAsync(modelId, log);
                     }
                     else
                     {
@@ -60,7 +85,7 @@ namespace Rido
                     var provClient = ProvisioningDeviceClient.Create("global.azure-devices-provisioning.net", scopeId, security, transport);
                     if (!String.IsNullOrEmpty(modelId))
                     {
-                        provResult = await provClient.RegisterAsync(GetProvisionPayload(modelId)).ConfigureAwait(false);
+                        provResult = await provClient.RegisterWithModelAsync(modelId, log);
                     }
                     else
                     {
@@ -96,14 +121,6 @@ namespace Rido
                     }
                 }
             }
-        }
-
-        static ProvisioningRegistrationAdditionalData GetProvisionPayload(string modelId)
-        {
-            return new ProvisioningRegistrationAdditionalData
-            {
-                JsonData = "{ modelId: '" + modelId + "'}"
-            };
         }
     }
 }
