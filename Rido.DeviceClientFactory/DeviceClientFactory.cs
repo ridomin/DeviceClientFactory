@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 [assembly: InternalsVisibleToAttribute("Tests")]
@@ -43,12 +42,6 @@ namespace Rido
 
         static public DeviceClientFactory Instance { get; private set; }
 
-
-        private DeviceClientFactory(string connectionString) : this(connectionString, new NullLogger<DeviceClientFactory>(), "")
-        {
-        }
-
-
         private DeviceClientFactory(string connectionString, ILogger logger, string modelId)
         {
             this.logger = logger;
@@ -75,7 +68,7 @@ namespace Rido
         /// <param name="connectionString"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString, ILogger logger, string modelId)
+        public static async Task<DeviceClient> CreateDeviceClientAsync(string connectionString, ILogger logger, string modelId = "")
         {
             var dcf = new DeviceClientFactory(connectionString, logger, modelId);
             if (dcf.connectionStringType.Equals(ConnectionStringType.Invalid))
@@ -177,8 +170,7 @@ namespace Rido
 
             this.connectionStringType = ValidateParams();
 
-            logger.LogInformation($"Connection Tyoe: {this.connectionStringType}");
-
+            logger.LogInformation($"Connection Type: {this.connectionStringType}");
         }
     }
 }
