@@ -5,6 +5,8 @@ using Microsoft.Azure.Devices.Provisioning.Client.Transport;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Rido
@@ -36,6 +38,16 @@ namespace Rido
 
     class DPS
     {
+        public static async Task<DeviceClient> CreateDeviceWithMasterKey(string scopeId, string deviceId, string masterKey, string modelId, ILogger log)
+        {
+            byte[] key = Convert.FromBase64String(masterKey);
+            using (var hmac = new HMACSHA256(key))
+            {
+                string deviceKey = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(deviceId)));
+                return await ProvisionDeviceWithSasKeyAsync(scopeId, deviceId, deviceKey, modelId, log);
+            }
+        }
+
         internal static async Task<DeviceClient> ProvisionDeviceWithSasKeyAsync(string scopeId, string deviceId, string deviceKey, string modelId, ILogger log)
         {
             using (var transport = new ProvisioningTransportHandlerMqtt())

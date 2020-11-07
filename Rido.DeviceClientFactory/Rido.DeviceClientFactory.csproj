@@ -10,6 +10,10 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <RepositoryUrl>https://github.com/ridomin/DeviceClientFactory</RepositoryUrl>
     <PackageProjectUrl>https://github.com/ridomin/DeviceClientFactory</PackageProjectUrl>
+    <Description>Connect to Azure IoT Hub using different connection combinations: DPS or direct Hub, Sas Keys or Certs.
+Announce the ModelID with MQTT and/or DPS</Description>
+    <PackageTags>iot</PackageTags>
+    <PackageReleaseNotes>PnP, Central updates</PackageReleaseNotes>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GitVersionTask" Version="5.3.7">
