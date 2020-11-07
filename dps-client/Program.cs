@@ -11,7 +11,7 @@ namespace dps_client
     {
         static async Task Main(string[] args)
         {
-            ILogger logger = LoggerFactory.Create(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Trace)).CreateLogger<Program>();
+            ILogger logger = LoggerFactory.Create(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Information)).CreateLogger<Program>();
 
             Stopwatch clock = Stopwatch.StartNew();
             Console.WriteLine($"Dps Client [{ThisAssemblyVersion}]. Connecting.");
