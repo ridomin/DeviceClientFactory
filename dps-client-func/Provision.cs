@@ -7,8 +7,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net;
 
-namespace Rido.DeviceClientFactoryFunction
+namespace dps_client_func
 {
     public static class Provision
     {
@@ -17,15 +18,17 @@ namespace Rido.DeviceClientFactoryFunction
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            log.LogInformation("Device Client Factory Function");
 
-            string dcf = req.Query["DCF"];
+            string name = req.Query["DCF"];
 
-            _ = await Rido.DeviceClientFactory.CreateDeviceClientAsync(dcf);
+            //string responseMessage = string.IsNullOrEmpty(name)
+            //    ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
+            //    : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
-
-            string url = $"https://mqtt.rido.dev?cs=";
-            return new OkObjectResult(url);
+            _ = await Rido.DeviceClientFactory.CreateDeviceClientAsync(name);
+            string responseMessage = "https://mqtt.rido.dev?cs=" + WebUtility.UrlEncode(Rido.DeviceClientFactory.Instance.ConnectionString);
+            return new OkObjectResult(responseMessage);
         }
     }
 }

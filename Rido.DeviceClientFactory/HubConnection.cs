@@ -15,6 +15,7 @@ namespace Rido
                 client = DeviceClient.CreateFromConnectionString(
                   connectionString,
                   TransportType.Mqtt);
+                DeviceClientFactory.Instance.ConnectionString = connectionString;
             }
             else
             {
@@ -22,6 +23,7 @@ namespace Rido
                   connectionString,
                   TransportType.Mqtt,
                   new ClientOptions { ModelId = modelId });
+                DeviceClientFactory.Instance.ConnectionString = $"{connectionString};ModelId={modelId}";
 
             }
             logger.LogWarning($"Device connected: " + connectionString);

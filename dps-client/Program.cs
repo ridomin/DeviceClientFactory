@@ -2,6 +2,7 @@
 using Rido;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace dps_client
     {
         static async Task Main(string[] args)
         {
-            ILogger logger = LoggerFactory.Create(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Trace)).CreateLogger<Program>();
+            ILogger logger = LoggerFactory.Create(builder => builder.AddConsole().SetMinimumLevel(LogLevel.Information)).CreateLogger<Program>();
 
             Stopwatch clock = Stopwatch.StartNew();
             Console.WriteLine($"Dps Client [{ThisAssemblyVersion}]. Connecting.");
@@ -26,6 +27,8 @@ namespace dps_client
             var twin = await dc.GetTwinAsync();
             Console.WriteLine(twin.ToJson());
             await dc.CloseAsync();
+            string url = "https://mqtt.rido.dev?cs=" + WebUtility.UrlEncode(Rido.DeviceClientFactory.Instance.ConnectionString);
+            Console.WriteLine(url);
 
         }
         static string ThisAssemblyVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
