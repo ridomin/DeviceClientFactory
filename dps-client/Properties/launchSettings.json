@@ -7,6 +7,10 @@
     "rido-app": {
       "commandName": "Project",
       "commandLineArgs": "ScopeId=0ne0015A3CC;DeviceId=test;SharedAccessKey=yBdU/q3cYrVmJNfLvep2/KMHcBqxk2FBqEVuey34rVg=;ModelId=dtmi:jp:co:covia:ActyG3;2"
+    },
+    "central-master": {
+      "commandName": "Project",
+      "commandLineArgs": "ScopeId=0ne0015ABF4;DeviceId=test01;MasterAccessKey=gq4DZfE52zN5IvPIW0AVorT+QKHJA4SZVYLVWeQqzdYxbciKSEWs8oe+H8cb61YVP3qqxDOsVsmNOUBrcv7g6A==;ModelId=dtmi:jp:co:covia:ActyG3;2"
     }
   }
 }
