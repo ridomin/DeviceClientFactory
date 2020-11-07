@@ -2,6 +2,7 @@
 using Rido;
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -26,7 +27,8 @@ namespace dps_client
             var twin = await dc.GetTwinAsync();
             Console.WriteLine(twin.ToJson());
             await dc.CloseAsync();
-            Console.WriteLine(DeviceClientFactory.Instance.ConnectionString);
+            string url = "https://mqtt.rido.dev?cs=" + WebUtility.UrlEncode(Rido.DeviceClientFactory.Instance.ConnectionString);
+            Console.WriteLine(url);
 
         }
         static string ThisAssemblyVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();

@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace dps_client_func
 {
@@ -26,7 +27,7 @@ namespace dps_client_func
             //    : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
             _ = await Rido.DeviceClientFactory.CreateDeviceClientAsync(name);
-            string responseMessage = Rido.DeviceClientFactory.Instance.ConnectionString;
+            string responseMessage = "https://mqtt.rido.dev?cs=" + WebUtility.UrlEncode(Rido.DeviceClientFactory.Instance.ConnectionString);
             return new OkObjectResult(responseMessage);
         }
     }
