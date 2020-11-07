@@ -7,12 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rido.DeviceClientFactory", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{073C841D-33C0-4F8A-A56F-BEBDDF0C6D8A}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnetcore.yml = .github\workflows\dotnetcore.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{EC67D3E4-2152-4071-85AA-C8D9666E2C3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dps-client", "dps-client\dps-client.csproj", "{D3F4DAA2-6B9A-480B-B8CB-B8D6CEC3066F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dps-client", "dps-client\dps-client.csproj", "{D3F4DAA2-6B9A-480B-B8CB-B8D6CEC3066F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dps-client-func", "dps-client-func\dps-client-func.csproj", "{2A630816-C3E9-4B11-B81E-1A2AFAC1B511}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +35,10 @@ Global
 		{D3F4DAA2-6B9A-480B-B8CB-B8D6CEC3066F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3F4DAA2-6B9A-480B-B8CB-B8D6CEC3066F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3F4DAA2-6B9A-480B-B8CB-B8D6CEC3066F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A630816-C3E9-4B11-B81E-1A2AFAC1B511}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A630816-C3E9-4B11-B81E-1A2AFAC1B511}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A630816-C3E9-4B11-B81E-1A2AFAC1B511}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A630816-C3E9-4B11-B81E-1A2AFAC1B511}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

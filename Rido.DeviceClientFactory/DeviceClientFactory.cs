@@ -32,8 +32,8 @@ namespace Rido
 
         internal ConnectionStringType connectionStringType = ConnectionStringType.Invalid;
         readonly string invalidOptionsMessage = string.Empty;
-
-        internal string ConnectionString { get; private set; }
+        public string ConnectionString;
+        internal string _ConnectionString { get; private set; }
         internal string HostName { get; private set; }
         internal string ScopeId { get; private set; }
         internal string DeviceId { get; private set; }
@@ -47,7 +47,7 @@ namespace Rido
         private DeviceClientFactory(string connectionString, ILogger logger, string modelId)
         {
             this.logger = logger;
-            this.ConnectionString = connectionString;
+            this._ConnectionString = connectionString;
             this.ModelId = modelId;
             this.ParseConnectionString(connectionString);
         }
@@ -82,7 +82,7 @@ namespace Rido
             switch (dcf.connectionStringType)
             {
                 case ConnectionStringType.DirectSas:
-                    return await HubConnection.CreateClientFromConnectionString(dcf.ConnectionString, logger, dcf.ModelId);
+                    return await HubConnection.CreateClientFromConnectionString(dcf._ConnectionString, logger, dcf.ModelId);
                 case ConnectionStringType.DirectCert:
                     return await HubConnection.CreateClientFromCert(dcf.HostName, dcf.DeviceId, dcf.X509, logger, dcf.ModelId);
                 case ConnectionStringType.DPSCert:
