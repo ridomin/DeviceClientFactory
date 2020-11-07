@@ -26,6 +26,7 @@ namespace dps_client
             var twin = await dc.GetTwinAsync();
             Console.WriteLine(twin.ToJson());
             await dc.CloseAsync();
+            Console.WriteLine(DeviceClientFactory.Instance.ConnectionString);
 
         }
         static string ThisAssemblyVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
