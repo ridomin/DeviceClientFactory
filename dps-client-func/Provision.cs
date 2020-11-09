@@ -19,9 +19,10 @@ namespace dps_client_func
             ILogger log)
         {
             log.LogInformation("Device Client Factory Function");
+            log.LogInformation(req.Query["DCF"]);
 
-            string name = req.Query["DCF"];
-
+            string name = WebUtility.UrlDecode(req.Query["DCF"]);
+            log.LogInformation(name);
             //string responseMessage = string.IsNullOrEmpty(name)
             //    ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
             //    : $"Hello, {name}. This HTTP triggered function executed successfully.";
