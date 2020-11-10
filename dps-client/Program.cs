@@ -27,7 +27,8 @@ namespace dps_client
             var twin = await dc.GetTwinAsync();
             Console.WriteLine(twin.ToJson());
             await dc.CloseAsync();
-            string url = "https://mqtt.rido.dev?cs=" + WebUtility.UrlEncode(Rido.DeviceClientFactory.Instance.ConnectionString);
+            var dcf = Rido.DeviceClientFactory.Instance;
+            string url = $"https://mqtt.rido.dev?HostName={dcf.HostName}&DeviceId={dcf.DeviceId}&SharedAccessKey={dcf.SharedAccessKey}&ModelId={dcf.ModelId}";
             Console.WriteLine(url);
 
         }

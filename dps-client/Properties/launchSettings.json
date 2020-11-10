@@ -1,5 +1,9 @@
 {
   "profiles": {
+    "directHub": {
+      "commandName": "Project",
+      "commandLineArgs": "HostName=ridohub.azure-devices.net;DeviceId=test;SharedAccessKey=ao4HGzIYt1BGW23LT0dfhEJEKCuA1MDHcipvJYsZm98="
+    },
     "pnp-ga": {
       "commandName": "Project",
       "commandLineArgs": "ScopeId=0ne0015ABF4;DeviceId=test;SharedAccessKey=gXbjoGfk08ghWj2gBZ0fDuAmCC/qc1ySgvdSKqoA8zw=;ModelId=dtmi:jp:co:covia:ActyG3;2"
@@ -10,7 +14,7 @@
     },
     "central-master": {
       "commandName": "Project",
-      "commandLineArgs": "ScopeId=0ne0015ABF4;DeviceId=test04;MasterAccessKey=;ModelId=dtmi:rigado:HoboMX1102A;1"
+      "commandLineArgs": "ScopeId=0ne0015ABF4;DeviceId=test04;MasterAccessKey=gq4DZfE52zN5IvPIW0AVorT+QKHJA4SZVYLVWeQqzdYxbciKSEWs8oe+H8cb61YVP3qqxDOsVsmNOUBrcv7g6A==;ModelId=dtmi:rigado:HoboMX1102A;1"
     }
   }
 }

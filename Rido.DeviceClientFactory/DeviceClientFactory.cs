@@ -34,13 +34,13 @@ namespace Rido
         readonly string invalidOptionsMessage = string.Empty;
         public string ConnectionString;
         internal string _ConnectionString { get; private set; }
-        internal string HostName { get; private set; }
+        public string HostName { get; set; }
         internal string ScopeId { get; private set; }
-        internal string DeviceId { get; private set; }
-        internal string SharedAccessKey { get; private set; }
+        public string DeviceId { get; private set; }
+        public string SharedAccessKey { get;  set; }
         internal string MasterAccessKey { get; private set; }
         internal string X509 { get; private set; }
-        internal string ModelId { get; private set; }
+        public string ModelId { get; private set; }
 
         static public DeviceClientFactory Instance { get; private set; }
 

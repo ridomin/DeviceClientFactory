@@ -27,8 +27,9 @@ namespace dps_client_func
             //    ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
             //    : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
-            _ = await Rido.DeviceClientFactory.CreateDeviceClientAsync(name);
-            string responseMessage = "https://mqtt.rido.dev?cs=" + WebUtility.UrlEncode(Rido.DeviceClientFactory.Instance.ConnectionString);
+            _ = await Rido.DeviceClientFactory.CreateDeviceClientAsync(name, log);
+            var dcf = Rido.DeviceClientFactory.Instance;
+            string responseMessage = $"https://mqtt.rido.dev?HostName={dcf.HostName}&DeviceId={dcf.DeviceId}&SharedAccessKey={dcf.SharedAccessKey}&ModelId={dcf.ModelId}";
             return new OkObjectResult(responseMessage);
         }
     }

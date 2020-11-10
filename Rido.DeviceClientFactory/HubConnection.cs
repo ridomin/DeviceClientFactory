@@ -23,6 +23,7 @@ namespace Rido
                   connectionString,
                   TransportType.Mqtt,
                   new ClientOptions { ModelId = modelId });
+                                
                 DeviceClientFactory.Instance.ConnectionString = $"{connectionString};ModelId={modelId}";
 
             }
