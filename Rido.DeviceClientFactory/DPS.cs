@@ -5,6 +5,8 @@ using Microsoft.Azure.Devices.Provisioning.Client.Transport;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Rido
@@ -36,6 +38,23 @@ namespace Rido
 
     class DPS
     {
+        public static async Task<DeviceClient> CreateDeviceWithMasterKey(string scopeId, string deviceId, string masterKey, string modelId, ILogger log)
+        {
+            if (deviceId.Contains("{%d}"))
+            {
+                deviceId = deviceId.Replace("{%d}", Environment.TickCount.ToString());
+                Rido.DeviceClientFactory.Instance.DeviceId = deviceId;
+                log.LogInformation("Replacing DeviceId from connection string");
+            }
+            byte[] key = Convert.FromBase64String(masterKey);
+            using (var hmac = new HMACSHA256(key))
+            {
+                string deviceKey = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(deviceId)));
+                Rido.DeviceClientFactory.Instance.SharedAccessKey = deviceKey;
+                return await ProvisionDeviceWithSasKeyAsync(scopeId, deviceId, deviceKey, modelId, log);
+            }
+        }
+
         internal static async Task<DeviceClient> ProvisionDeviceWithSasKeyAsync(string scopeId, string deviceId, string deviceKey, string modelId, ILogger log)
         {
             using (var transport = new ProvisioningTransportHandlerMqtt())
@@ -60,6 +79,7 @@ namespace Rido
                     {
                         log.LogWarning($"Device {provResult.DeviceId} in Hub {provResult.AssignedHub}");
                         log.LogInformation($"LastRefresh {provResult.LastUpdatedDateTimeUtc} RegistrationId {provResult.RegistrationId}");
+                        Rido.DeviceClientFactory.Instance.HostName = provResult.AssignedHub;
                         var csBuilder = IotHubConnectionStringBuilder.Create(provResult.AssignedHub, new DeviceAuthenticationWithRegistrySymmetricKey(provResult.DeviceId, security.GetPrimaryKey()));
                         string connectionString = csBuilder.ToString();
                         return await HubConnection.CreateClientFromConnectionString(connectionString, log, modelId);
@@ -98,7 +118,7 @@ namespace Rido
                     {
                         log.LogWarning($"Device {provResult.DeviceId} in Hub {provResult.AssignedHub}");
                         log.LogInformation($"LastRefresh {provResult.LastUpdatedDateTimeUtc} RegistrationId {provResult.RegistrationId}");
-
+                        Rido.DeviceClientFactory.Instance.HostName = provResult.AssignedHub;
                         var csBuilder = IotHubConnectionStringBuilder.Create(provResult.AssignedHub, new DeviceAuthenticationWithX509Certificate(provResult.DeviceId, security.GetAuthenticationCertificate()));
                         string connectionString = csBuilder.ToString();
 

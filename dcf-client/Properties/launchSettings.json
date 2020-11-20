@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "dcf-client": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DeviceConnectionString": "ScopeId=0ne0016410C;DeviceId=device-test-{%d};MasterAccessKey=FLWw5XrfeknJLT9gPxeNzJFfmnTmUElVKYWhYE3JIaf34Mcjhu6o9P2DEEZOF2r74K3yWNGU8+o9EYch/5wXnw==;ModelId=dtmi:com:example:dnd:TemperatureController;1"
+      }
+    }
+  }
+}

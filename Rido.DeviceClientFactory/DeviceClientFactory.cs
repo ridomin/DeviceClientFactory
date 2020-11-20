@@ -16,6 +16,7 @@ namespace Rido
         DirectCert,
         DPSSas,
         DPSCert,
+        DPSSasMaster
     }
 
     enum ModelAnnoucement
@@ -31,21 +32,22 @@ namespace Rido
 
         internal ConnectionStringType connectionStringType = ConnectionStringType.Invalid;
         readonly string invalidOptionsMessage = string.Empty;
-
-        internal string ConnectionString { get; private set; }
-        internal string HostName { get; private set; }
+        public string ConnectionString;
+        internal string _ConnectionString { get; private set; }
+        public string HostName { get; set; }
         internal string ScopeId { get; private set; }
-        internal string DeviceId { get; private set; }
-        internal string SharedAccessKey { get; private set; }
+        public string DeviceId { get; internal set; }
+        public string SharedAccessKey { get;  set; }
+        internal string MasterAccessKey { get; private set; }
         internal string X509 { get; private set; }
-        internal string ModelId { get; private set; }
+        public string ModelId { get; private set; }
 
         static public DeviceClientFactory Instance { get; private set; }
 
         private DeviceClientFactory(string connectionString, ILogger logger, string modelId)
         {
             this.logger = logger;
-            this.ConnectionString = connectionString;
+            this._ConnectionString = connectionString;
             this.ModelId = modelId;
             this.ParseConnectionString(connectionString);
         }
@@ -80,13 +82,15 @@ namespace Rido
             switch (dcf.connectionStringType)
             {
                 case ConnectionStringType.DirectSas:
-                    return await HubConnection.CreateClientFromConnectionString(dcf.ConnectionString, logger, dcf.ModelId);
+                    return await HubConnection.CreateClientFromConnectionString(dcf._ConnectionString, logger, dcf.ModelId);
                 case ConnectionStringType.DirectCert:
                     return await HubConnection.CreateClientFromCert(dcf.HostName, dcf.DeviceId, dcf.X509, logger, dcf.ModelId);
-                case ConnectionStringType.DPSSas:
-                    return await DPS.ProvisionDeviceWithSasKeyAsync(dcf.ScopeId, dcf.DeviceId, dcf.SharedAccessKey, dcf.ModelId, logger).ConfigureAwait(false);
                 case ConnectionStringType.DPSCert:
-                    return await DPS.ProvisionDeviceWithCertAsync(dcf.ScopeId, dcf.X509, dcf.ModelId, logger).ConfigureAwait(false);
+                    return await DPS.ProvisionDeviceWithCertAsync(dcf.ScopeId, dcf.X509, dcf.ModelId, logger);
+                case ConnectionStringType.DPSSas:
+                    return await DPS.ProvisionDeviceWithSasKeyAsync(dcf.ScopeId, dcf.DeviceId, dcf.SharedAccessKey, dcf.ModelId, logger);
+                case ConnectionStringType.DPSSasMaster:
+                    return await DPS.CreateDeviceWithMasterKey(dcf.ScopeId, dcf.DeviceId, dcf.MasterAccessKey, dcf.ModelId, logger);
                 default:
                     return null;
             }
@@ -133,6 +137,10 @@ namespace Rido
                     {
                         result = ConnectionStringType.DPSSas;
                     }
+                    else if (!string.IsNullOrWhiteSpace(this.MasterAccessKey))
+                    {
+                        result = ConnectionStringType.DPSSasMaster;
+                    }
                     else if (!string.IsNullOrWhiteSpace(this.X509))
                     {
                         result = ConnectionStringType.DPSCert;
@@ -156,6 +164,7 @@ namespace Rido
             this.DeviceId = GetConnectionStringValue(map, nameof(this.DeviceId));
             this.SharedAccessKey = GetConnectionStringValue(map, nameof(this.SharedAccessKey));
             this.X509 = GetConnectionStringValue(map, nameof(this.X509));
+            this.MasterAccessKey = GetConnectionStringValue(map, nameof(this.MasterAccessKey));
 
             if (string.IsNullOrEmpty(this.ModelId))
             {
