@@ -40,6 +40,12 @@ namespace Rido
     {
         public static async Task<DeviceClient> CreateDeviceWithMasterKey(string scopeId, string deviceId, string masterKey, string modelId, ILogger log)
         {
+            if (deviceId.Contains("{%d}"))
+            {
+                deviceId = deviceId.Replace("{%d}", Environment.TickCount.ToString());
+                Rido.DeviceClientFactory.Instance.DeviceId = deviceId;
+                log.LogInformation("Replacing DeviceId from connection string");
+            }
             byte[] key = Convert.FromBase64String(masterKey);
             using (var hmac = new HMACSHA256(key))
             {

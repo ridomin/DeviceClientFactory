@@ -36,7 +36,7 @@ namespace Rido
         internal string _ConnectionString { get; private set; }
         public string HostName { get; set; }
         internal string ScopeId { get; private set; }
-        public string DeviceId { get; private set; }
+        public string DeviceId { get; internal set; }
         public string SharedAccessKey { get;  set; }
         internal string MasterAccessKey { get; private set; }
         internal string X509 { get; private set; }
