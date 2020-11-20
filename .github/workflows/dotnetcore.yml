@@ -13,9 +13,9 @@ jobs:
     - name: Fetch
       run: git fetch --prune --unshallow
     - name: Setup .NET Core 5
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: 5.0
+        dotnet-version: 5.0.100
     - name: Build with dotnet
       run: dotnet build --configuration Release
     - name: Test
