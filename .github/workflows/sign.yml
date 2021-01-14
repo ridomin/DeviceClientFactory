@@ -1,0 +1,18 @@
+name: Sign Packages
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - uses: Azure/get-keyvault-secrets@v1
+      with:
+        keyvault: RidoVault" # name of key vault in Azure portal
+        secrets: 'RidoDigiCert'  # comma separated list of secret keys to fetch from key vault 
+      id: myGetSecretAction # ID for secrets that you will reference
