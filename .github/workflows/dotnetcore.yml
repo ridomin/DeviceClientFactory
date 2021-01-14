@@ -30,11 +30,11 @@ jobs:
       run: |
         for f in Rido.DeviceClientFactory/bin/Release/*.nupkg
         do
-          dotnet nuget push $f --source "GPR" --skip-duplicate
+          dotnet nuget push $f --source "GPR" --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN }}
         done
-
+        
         for f in Rido.DeviceClientFactory/bin/Release/*.snupkg
         do
-          dotnet nuget push $f --source "GPR" --skip-duplicate
+          dotnet nuget push $f --source "GPR" --skip-duplicate --api-key ${{ secrets.GITHUB_TOKEN }}
         done
       shell: bash
