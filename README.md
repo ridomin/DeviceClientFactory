@@ -30,12 +30,6 @@ HostName=myhub.azure-devices.net;DeviceId=myDevice;SharedAccessKey=asd8f789fa9s8
 HostName=myhub.azure-devices.net;DeviceId=myDevice;SharedAccessKey=asd8f789fa9s8u9suf9s8udf9as8uf8d;ModelId=dtmi:company:interface;1
 ```
 
-*Scope Id with Master Key* - using the enrollment group master key it will provision new devices
-
-```text
-ScopeId=0ne123123;DeviceId=myDevice;MasterccessKey=s0f98as0d9f8as0d89fsa0d89f0asd89fsadf
-```
-
 *ScopeId + Sas Key* - connect to Hub+DPS or Central, Device Key must be generated with `dps-keygen` using the masterkey
 
 ```text
@@ -54,6 +48,13 @@ The certificate must be avaiable, within the private key, in the `CurrentUser\My
 
 ```text
 ScopeId=0ne12312;X509T=1231231423459243859328;ModelId=dtmi:company:interface;1
+```
+
+** ONLY FOR DEMO PURPOSES **
+*Scope Id with Master Key* - using the enrollment group master key it will provision new devices
+
+```text
+ScopeId=0ne123123;DeviceId=myDevice;MasterccessKey=s0f98as0d9f8as0d89fsa0d89f0asd89fsadf
 ```
 
 ### Note about certificates
