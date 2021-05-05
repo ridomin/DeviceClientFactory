@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TestDevice": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "CS": "ScopeId=0ne002571BE;X509=1231231423459243859328"
+      }
+    }
+  }
+}

@@ -13,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{EC67D3E4-2152-4071-85AA-C8D9666E2C3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dcf-client", "dcf-client\dcf-client.csproj", "{A6CF9133-3193-467C-92F6-26ED6145F9F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dcf-client", "dcf-client\dcf-client.csproj", "{A6CF9133-3193-467C-92F6-26ED6145F9F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDevice", "TestDevice\TestDevice.csproj", "{49B0E2B0-DAA6-402A-B4EB-3EF4D11140ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{A6CF9133-3193-467C-92F6-26ED6145F9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6CF9133-3193-467C-92F6-26ED6145F9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6CF9133-3193-467C-92F6-26ED6145F9F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49B0E2B0-DAA6-402A-B4EB-3EF4D11140ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49B0E2B0-DAA6-402A-B4EB-3EF4D11140ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49B0E2B0-DAA6-402A-B4EB-3EF4D11140ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49B0E2B0-DAA6-402A-B4EB-3EF4D11140ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
