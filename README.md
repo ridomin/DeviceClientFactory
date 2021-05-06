@@ -13,49 +13,53 @@ This library is available as a NuGet package.
 ## Sample Code
 
 ```cs
-var deviceClient = await DeviceClientFactory.CreateDeviceClientAsync(connectionString, logger, modelId);
+var deviceClient = await DeviceClientFactory.CreateDeviceClientAsync(connectionString, modelId);
 ```
 
 ## Sample connection strings
 
 *Direct connection string* - connect to Hub only
 
-```text
-HostName=myhub.azure-devices.net;DeviceId=myDevice;SharedAccessKey=asd8f789fa9s8u9suf9s8udf9as8uf8d
+```cs
+string connectionString = "HostName=myhub.azure-devices.net;DeviceId=myDevice;SharedAccessKey=asd8f789fa9s8u9suf9s8udf9as8uf8d";
+string modelId = "dtmi:com:example:TemperatureController;1";
+DeviceClient dc = await DeviceClientFactory.CreateDeviceClientAsync(connectionString, modelId);
 ```
 
 *Direct connection string with Model Id* - PnP Discovery
 
-```text
-HostName=myhub.azure-devices.net;DeviceId=myDevice;SharedAccessKey=asd8f789fa9s8u9suf9s8udf9as8uf8d;ModelId=dtmi:company:interface;1
+```cs
+string connectionString = "HostName=myhub.azure-devices.net;DeviceId=myDevice;SharedAccessKey=asd8f789fa9s8u9suf9s8udf9as8uf8d";
+string modelId = "dtmi:com:example:TemperatureController;1";
+DeviceClient dc = await DeviceClientFactory.CreateDeviceClientAsync(connectionString, modelId);
 ```
+
 
 *ScopeId + Sas Key* - connect to Hub+DPS or Central, Device Key must be generated with `dps-keygen` using the masterkey
 
-```text
-ScopeId=0ne123123;DeviceId=myDevice;SharedAccessKey=s0f98as0d9f8as0d89fsa0d89f0asd89fsadf
+```cs
+string connectionString = "ScopeId=0ne123123;DeviceId=myDevice;SharedAccessKey=s0f98as0d9f8as0d89fsa0d89f0asd89fsadf";
+string modelId = "dtmi:com:example:TemperatureController;1";
+DeviceClient dc = await DeviceClientFactory.CreateDeviceClientAsync(connectionString, modelId);
 ```
 
 *ScopeId + Certificate* - connect to Hub+DPS or Central. Root cert must be verified in Central or DPS
 
-```text
-ScopeId=0ne12312;X509=1231231423459243859328
+```cs
+string connectionString = "ScopeId=0ne12312;X509=1231231423459243859328";
+DeviceClient dc = await DeviceClientFactory.CreateDeviceClientAsync(connectionString);
 ```
 
 The certificate must be avaiable, within the private key, in the `CurrentUser\My` cert store or as a pfx file
 
 *ScopeId + ModelId + Sas or X509* connect to Hub+DPS or Central using a Model Id
 
-```text
-ScopeId=0ne12312;X509T=1231231423459243859328;ModelId=dtmi:company:interface;1
+```cs
+string connectionString = "ScopeId=0ne12312;X509T=1231231423459243859328";
+string modelId = "dtmi:com:example:TemperatureController;1";
+DeviceClient dc = await DeviceClientFactory.CreateDeviceClientAsync(connectionString, modelId);
 ```
 
-** ONLY FOR DEMO PURPOSES **
-*Scope Id with Master Key* - using the enrollment group master key it will provision new devices
-
-```text
-ScopeId=0ne123123;DeviceId=myDevice;MasterccessKey=s0f98as0d9f8as0d89fsa0d89f0asd89fsadf
-```
 
 ### Note about certificates
 
