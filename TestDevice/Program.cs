@@ -7,12 +7,13 @@ namespace TestDevice
 {
     class Program
     {
-        static string CS = Environment.GetEnvironmentVariable("CS");
         static async Task Main(string[] args)
         {
-            var dc = await DeviceClientFactory.CreateDeviceClientAsync(CS, "dtmi:com:example:Thermostat;1");
+            string connectionString = Environment.GetEnvironmentVariable("CS");
+            string modelId = "dtmi:com:example:TemperatureController;1";
+            DeviceClient dc = await DeviceClientFactory.CreateDeviceClientAsync(connectionString, modelId);
             await dc.OpenAsync();
-            Console.WriteLine($"Device {DeviceClientFactory.Instance.DeviceId} Connected to {DeviceClientFactory.Instance.HostName}");
+            Console.WriteLine("Connected");
             await Task.Delay(500);
             await dc.CloseAsync();
         }
