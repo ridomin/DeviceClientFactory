@@ -22,8 +22,7 @@ var deviceClient = await DeviceClientFactory.CreateDeviceClientAsync(connectionS
 
 ```cs
 string connectionString = "HostName=myhub.azure-devices.net;DeviceId=myDevice;SharedAccessKey=asd8f789fa9s8u9suf9s8udf9as8uf8d";
-string modelId = "dtmi:com:example:TemperatureController;1";
-DeviceClient dc = await DeviceClientFactory.CreateDeviceClientAsync(connectionString, modelId);
+DeviceClient dc = await DeviceClientFactory.CreateDeviceClientAsync(connectionString);
 ```
 
 *Direct connection string with Model Id* - PnP Discovery
